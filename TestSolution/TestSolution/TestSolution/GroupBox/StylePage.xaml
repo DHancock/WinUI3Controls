@@ -1,0 +1,51 @@
+﻿<Page
+    x:Class="TestSolution.GroupBox.StylePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TestSolution.GroupBox"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:w3c="using:AssyntSoftware.WinUI3Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.Resources>
+
+            <SolidColorBrush x:Key="brush" Color="DarkCyan"/>
+
+            <Style x:Key="exampleStyle" TargetType="w3c:GroupBox">
+                <Setter Property="BorderBrush" Value="{StaticResource brush}"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="HeadingMargin" Value="20"/>
+                <Setter Property="HeadingBaseLineRatio" Value="0.55"/>
+                <Setter Property="Heading">
+                    <Setter.Value>
+                        <StackPanel Orientation="Horizontal">
+                            <SymbolIcon Symbol="Setting" Foreground="{StaticResource brush}"/>
+                            <TextBlock x:Name="headingText" Text="Settings" Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="AutomationProperties.Name" Value="{x:Bind headingText.Text}"/>
+            </Style>
+
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <w3c:GroupBox Style="{StaticResource exampleStyle}" Grid.Row="1" Grid.Column="1">
+            <ToggleSwitch/>
+        </w3c:GroupBox>
+    </Grid>
+</Page>
+

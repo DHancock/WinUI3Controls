@@ -1,0 +1,135 @@
+﻿<Page
+    x:Class="TestSolution.GroupBox.PropertiesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TestSolution.GroupBox"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:w3c="using:AssyntSoftware.WinUI3Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    
+    <Grid x:Name="RootPanel">
+        <Grid.Resources>
+            <Flyout x:Key="colorPickerFlyout">
+                <RelativePanel>
+                    <ColorPicker x:Name="colorPicker"
+                         IsColorChannelTextInputVisible="False"
+                         IsHexInputVisible="False"/>
+
+                    <Grid Margin="0,10,0,0" RelativePanel.Below="colorPicker"
+                        RelativePanel.AlignLeftWithPanel="True"
+                        RelativePanel.AlignRightWithPanel="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="Cancel" Click="cancelColor_Click" HorizontalAlignment="Center"/>
+                        <Button Content="OK" Click="confirmColor_Click" HorizontalAlignment="Center" Grid.Column="1"/>
+                    </Grid>
+                </RelativePanel>
+            </Flyout>
+        </Grid.Resources>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition MinWidth="300" Width="300"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid x:Name="ExamplePanel" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="0" x:Name="svz" ZoomMode="Enabled" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MinZoomFactor="1">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <w3c:GroupBox x:Name="TestGroupBox"
+                            Heading="{x:Bind ghtb.Text, Mode=OneWay}" 
+                            BorderStartPadding="{x:Bind bsp.Value, Mode=OneWay}"
+                            BorderEndPadding="{x:Bind bep.Value, Mode=OneWay}"
+                            HeadingMargin="{x:Bind hm.Value, Mode=OneWay}"
+                            HeadingBaseLineRatio="{x:Bind hblr.Value, Mode=OneWay}"
+                            FontSize="{x:Bind fs.Value, Mode=OneWay}">
+                        <w3c:GroupBox.Transitions>
+                            <TransitionCollection>
+                                <EntranceThemeTransition IsStaggeringEnabled="True" />
+                            </TransitionCollection>
+                        </w3c:GroupBox.Transitions>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Content="Button 0" Grid.Row="0" Grid.Column="0" Margin="0,0,0,0"/>
+                            <Button Content="Button 1" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0"/>
+                            <Button Content="Button 2" Grid.Row="0" Grid.Column="2" Margin="5,0,0,0"/>
+                            <Button Content="Button 3" Grid.Row="1" Grid.Column="0" Margin="0,5,0,0"/>
+                            <Button Content="Button 4" Grid.Row="1" Grid.Column="1" Margin="5,5,0,0"/>
+                            <Button Content="Button 5" Grid.Row="1" Grid.Column="2" Margin="5,5,0,0"/>
+                            <Button Content="Button 6" Grid.Row="2" Grid.Column="0" Margin="0,5,0,0" x:Name="extraButton" Visibility="Collapsed"/>
+                        </Grid>
+                    </w3c:GroupBox>
+
+                </Grid>
+            </ScrollViewer>
+            <Slider Grid.Row="1" Width="200" Maximum="{x:Bind svz.MaxZoomFactor, Mode=OneWay}" Minimum="{x:Bind svz.MinZoomFactor, Mode=OneWay}" ValueChanged="ZoomSlider_ValueChanged"/>
+        </Grid>
+
+        <ScrollViewer Grid.Column="1">
+            <StackPanel Background="LightGray" Padding="20">
+                <StackPanel.Resources>
+                    <DataTemplate x:Name="SmallHeadingText">
+                        <TextBlock Text="{Binding}" FontSize="12"/>
+                    </DataTemplate>
+                    <Style TargetType="Slider">
+                        <Setter Property="HeaderTemplate" Value="{StaticResource SmallHeadingText}"/>
+                    </Style>
+                </StackPanel.Resources>
+
+                <Slider x:Name="hm" Header="HeadingMargin property" Minimum="0" Maximum="40" StepFrequency="0.1"/>
+                <Slider x:Name="bsp" Header="BorderStartPadding property" Minimum="0" Maximum="10" StepFrequency="0.1"/>
+                <Slider x:Name="bep" Header="BorderEndPadding property" Minimum="0" Maximum="10" StepFrequency="0.1"/>
+                <Slider x:Name="hblr" Header="HeadingBaseLineRatio property" Minimum="0" Maximum="1" StepFrequency="0.01"/>
+                <Slider x:Name="bt" Header="BorderThickness property" Minimum="0" Maximum="20" StepFrequency="0.1" ValueChanged="BorderThickness_ValueChanged"/>
+
+                <ToggleSwitch x:Name="crts" Header="Uniform corner radius" Toggled="UniformCornerRadius_Toggled"/>
+                <Slider x:Name="tlcr" Header="Top Left" Minimum="0" Maximum="30" StepFrequency="0.1" ValueChanged="CornerRadius_Changed"/>
+                <Slider x:Name="trcr" Header="Top Right" Minimum="0" Maximum="30" StepFrequency="0.1" ValueChanged="CornerRadius_Changed"/>
+                <Slider x:Name="brcr" Header="Bottom Right" Minimum="0" Maximum="30" StepFrequency="0.1" ValueChanged="CornerRadius_Changed"/>
+                <Slider x:Name="blcr" Header="Bottom Left" Minimum="0" Maximum="30" StepFrequency="0.1" ValueChanged="CornerRadius_Changed"/>
+
+                <TextBox x:Name="ghtb" Header="Header String" Text="Example Text"/>
+                <Slider x:Name="fs" Header="Font size" Minimum="8" Maximum="30" StepFrequency="1"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,8">
+                    <Button Content="Set Border Colour" x:Name="colorPickerButton" Flyout="{StaticResource colorPickerFlyout}"/>
+                    <Rectangle Margin="10,0,0,0" Width="80" Height="32" ContextFlyout="{StaticResource colorPickerFlyout}" Fill="{x:Bind TestGroupBox.BorderBrush, Mode=OneWay}" Stroke="Black"/>
+                </StackPanel>
+
+                <ToggleSwitch Header="Extra button" Toggled="ShowExtraButton_Toggled"/>
+                <ToggleSwitch x:Name="darkMode" Header="Dark Mode" Toggled="DarkMode_Toggled"/>
+                <ToggleSwitch x:Name="flowDirection" Header="Flow Direction" Toggled="FlowDirection_Toggled" OnContent="Left to right" OffContent="Right to left"/>
+                <Button Content="Copy style" Click="CopyStyleButton_Click" Margin="0,5,0,5"/>
+                <Button Content="Revert to defaults" Click="RevertButton_Click" Margin="0,5,0,5"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

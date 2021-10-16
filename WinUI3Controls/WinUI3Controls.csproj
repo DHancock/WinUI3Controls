@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>AssyntSoftware.WinUI3Controls</RootNamespace>
+    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <UseWinUI>true</UseWinUI>
+    <Nullable>enable</Nullable>
+    <DebugType>embedded</DebugType>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyName>AssyntSoftware.WinUI3Controls</AssemblyName>
+    <Company>David Hancock</Company>
+    <Copyright>2021 David Hancock</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>WinUI Controls XAML GroupBox</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <Description>Provides a WinUI implimentation of a WPF GroupBox control.</Description>
+    <RepositoryUrl>https://github.com/DHancock/WinUI3Controls</RepositoryUrl>
+    <Authors>David Hancock</Authors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="GroupBox.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Microsoft.ProjectReunion" Version="0.8.5" />
+      <PackageReference Include="Microsoft.ProjectReunion.Foundation" Version="0.8.5" />
+      <PackageReference Include="Microsoft.ProjectReunion.WinUI" Version="0.8.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="GroupBox\GroupBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>
