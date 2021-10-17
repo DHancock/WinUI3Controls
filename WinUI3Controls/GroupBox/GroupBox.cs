@@ -97,9 +97,9 @@ namespace AssyntSoftware.WinUI3Controls
 
         public static readonly DependencyProperty HeadingProperty =
             DependencyProperty.Register(nameof(Heading),
-            typeof(object),
-            typeof(GroupBox),
-            new PropertyMetadata(null));
+                typeof(object),
+                typeof(GroupBox),
+                new PropertyMetadata(null));
 
         public object Heading
         {

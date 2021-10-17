@@ -16,7 +16,7 @@
     <PackageTags>WinUI Controls XAML GroupBox</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AnalysisLevel>latest</AnalysisLevel>
-    <Description>Provides a WinUI implimentation of a WPF GroupBox control.</Description>
+    <Description>Provides a WinUI implementation of a WPF GroupBox control.</Description>
     <RepositoryUrl>https://github.com/DHancock/WinUI3Controls</RepositoryUrl>
     <Authors>David Hancock</Authors>
   </PropertyGroup>
