@@ -24,8 +24,8 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="Cancel" Click="cancelColor_Click" HorizontalAlignment="Center"/>
-                        <Button Content="OK" Click="confirmColor_Click" HorizontalAlignment="Center" Grid.Column="1"/>
+                        <Button Content="Cancel" Click="CancelColor_Click" HorizontalAlignment="Center"/>
+                        <Button Content="OK" Click="ConfirmColor_Click" HorizontalAlignment="Center" Grid.Column="1"/>
                     </Grid>
                 </RelativePanel>
             </Flyout>

@@ -105,12 +105,12 @@ namespace TestSolution.GroupBox
         }
 
 
-        private void confirmColor_Click(object sender, RoutedEventArgs e)
+        private void ConfirmColor_Click(object sender, RoutedEventArgs e)
         {
             colorPickerButton.Flyout.Hide();
             TestGroupBox.BorderBrush = new SolidColorBrush(colorPicker.Color);
         }
-        private void cancelColor_Click(object sender, RoutedEventArgs e)
+        private void CancelColor_Click(object sender, RoutedEventArgs e)
         {
             colorPickerButton.Flyout.Hide();
         }
