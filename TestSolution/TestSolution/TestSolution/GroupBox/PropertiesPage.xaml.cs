@@ -183,10 +183,8 @@ namespace TestSolution.GroupBox
             hm.Value = cHeadingMargin;
             hblr.Value = cHeadingBaseLineRatio;
 
+            crts.IsOn = true;
             trcr.Value = sCornerRadius.TopRight;
-            brcr.Value = sCornerRadius.BottomRight;
-            blcr.Value = sCornerRadius.BottomLeft;
-            tlcr.Value = sCornerRadius.TopLeft;
 
             bt.Value = cBorderThickness;
 
