@@ -90,7 +90,7 @@ namespace AssyntSoftware.WinUI3Controls
             double halfStrokeThickness = BorderThickness.Left / 2;
             double headingHeight = (HeadingPresenter is null) ? 0.0 : HeadingPresenter.ActualHeight;
 
-            // if "borderOffset" is positive, the top border stroke extends into content presenter
+            // if "borderOffset" is positive, the top border line extends below the top of the content presenter
             double borderOffset = -(headingHeight - ((headingHeight * HeadingBaseLineRatio) + halfStrokeThickness));
             double cornerAdjustment = Math.Max(CornerRadius.TopLeft, CornerRadius.TopRight) - BorderThickness.Left;
             double topPadding = cornerAdjustment + borderOffset;
