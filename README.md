@@ -2,7 +2,7 @@
 
 A control library for WinUI 3
 
-It currently contains single control which provides a WinUI implementation of the **WPF GroupBox** control.\
+It currently contains a single control which provides a WinUI implementation of the **WPF GroupBox** control.\
 The library can be downloaded from NuGet. Search for "AssyntSoftware.WinUI3Controls"\
 To use the control:
 
