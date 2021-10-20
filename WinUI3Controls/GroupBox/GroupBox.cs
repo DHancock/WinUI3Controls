@@ -19,7 +19,6 @@ namespace AssyntSoftware.WinUI3Controls
         private ContentPresenter? ChildPresenter { get; set; }
         private Path? BorderPath { get; set; }
 
-
         public GroupBox()
         {
             this.DefaultStyleKey = typeof(GroupBox);
@@ -64,7 +63,7 @@ namespace AssyntSoftware.WinUI3Controls
                 CreateBorderRoundedRect();
         }
 
-        private void BorderPropertyChanged(DependencyObject sender, DependencyProperty dp)
+        private void BorderPropertyChanged(DependencyObject sender, DependencyProperty? dp)
         {
             if (ChildPresenter is null || BorderPath is null)
                 return;
@@ -75,23 +74,39 @@ namespace AssyntSoftware.WinUI3Controls
                 ChildPresenter.Padding = newPadding;
 
             // a non uniform border thickness isn't supported
-            BorderPath.StrokeThickness = BorderThickness.Left;
+            if (BorderPath.StrokeThickness != BorderThickness.Left)
+                BorderPath.StrokeThickness = BorderThickness.Left;
 
             // it's difficult to tell if changing the child presenter padding would
             // cause a size changed event, so always redraw the border here
             RedrawBorder();
         }
 
+
         private Thickness CalculateContentPresenterPadding()
         {
             static double Max(double a, double b, double c) => Math.Max(Math.Max(a, b), c);
 
+            double halfStrokeThickness = BorderThickness.Left / 2;
+            double headingHeight = (HeadingPresenter is null) ? 0.0 : HeadingPresenter.ActualHeight;
+
+            // if "borderOffset" is positive, the top border stroke extends into content presenter
+            double borderOffset = -(headingHeight - ((headingHeight * HeadingBaseLineRatio) + halfStrokeThickness));
+            double cornerAdjustment = Math.Max(CornerRadius.TopLeft, CornerRadius.TopRight) - BorderThickness.Left;
+            double topPadding = cornerAdjustment + borderOffset;
+
+            if (topPadding < borderOffset)  // top padding cannot be less that the bottom of the border 
+                topPadding = borderOffset;
+
+            if (topPadding < 0) // the content cannot be outside of the content presenter (even if that's a valid operation)
+                topPadding = 0;
+
             // a non uniform corner radius is unlikely, but possible
             // a non uniform border thickness isn't supported
             return new Thickness(Max(CornerRadius.TopLeft, CornerRadius.BottomLeft, BorderThickness.Left),
-                                    Max(CornerRadius.TopLeft, CornerRadius.TopRight, BorderThickness.Left),
-                                    Max(CornerRadius.TopRight, CornerRadius.BottomRight, BorderThickness.Left),
-                                    Max(CornerRadius.BottomLeft, CornerRadius.BottomRight, BorderThickness.Left));
+                                topPadding,
+                                Max(CornerRadius.TopRight, CornerRadius.BottomRight, BorderThickness.Left),
+                                Max(CornerRadius.BottomLeft, CornerRadius.BottomRight, BorderThickness.Left));
         }
 
 
@@ -137,7 +152,7 @@ namespace AssyntSoftware.WinUI3Controls
             DependencyProperty.Register(nameof(HeadingBaseLineRatio),
                 typeof(double),
                 typeof(GroupBox),
-                new PropertyMetadata(0.61, (d, e) => ((GroupBox)d).RedrawBorder()));
+                new PropertyMetadata(0.61, (d, e) => ((GroupBox)d).BorderPropertyChanged(d, null)));
 
         /// <summary>
         /// How far down the heading the border line is drawn.
@@ -216,11 +231,7 @@ namespace AssyntSoftware.WinUI3Controls
             static LineSegment LineTo(float x, float y) => new LineSegment() { Point = new Point(x, y), };
             static ArcSegment ArcTo(Point end, float radius) => new ArcSegment() { Point = end, RotationAngle = 90.0, IsLargeArc = false, Size = new Size(radius, radius), SweepDirection = SweepDirection.Clockwise };
 
-            PathFigure figure = new PathFigure()
-            {
-                IsClosed = false,
-                IsFilled = false,
-            };
+            PathFigure figure = new PathFigure() { IsClosed = false, IsFilled = false, };
 
             PathGeometry pathGeometry = new PathGeometry();
             pathGeometry.Figures.Add(figure);
