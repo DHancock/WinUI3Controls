@@ -6,8 +6,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 
-#nullable enable
-
 namespace AssyntSoftware.WinUI3Controls
 {
     [TemplatePart(Name = "PART_BorderPath", Type = typeof(Path))]
@@ -38,22 +36,24 @@ namespace AssyntSoftware.WinUI3Controls
             // offset the heading presenter from the control edge
             HeadingPresenter.Margin = new Thickness(HeadingMargin, 0, 0, 0);
 
-            // the padding is dependent on the corner radius and border thickness
-            ChildPresenter.Padding = CalculateContentPresenterPadding();
-
-            // a non uniform border thickness isn't supported
-            BorderPath.StrokeThickness = BorderThickness.Left;
-
             // reuse Control properties to define the group border
-            RegisterPropertyChangedCallback(CornerRadiusProperty, BorderPropertyChanged);
-            RegisterPropertyChangedCallback(BorderThicknessProperty, BorderPropertyChanged);
+            RegisterPropertyChangedCallback(CornerRadiusProperty, (s, d) => ((GroupBox)s).BorderPropertyChanged());
+            RegisterPropertyChangedCallback(BorderThicknessProperty, (s, d) => ((GroupBox)s).BorderPropertyChanged());
+
+            // initialise
+            BorderPropertyChanged();
 
             Loaded += (s, e) =>
             {
-                HeadingPresenter.SizeChanged += (s, e) => RedrawBorder();
-                SizeChanged += (s, e) => RedrawBorder();
+                GroupBox gb = (GroupBox)s;
 
-                RedrawBorder(); // first draw
+                if (gb.HeadingPresenter is not null)
+                {
+                    gb.HeadingPresenter.SizeChanged += (s, e) => gb.BorderPropertyChanged();
+                    gb.SizeChanged += (s, e) => ((GroupBox)s).RedrawBorder();
+
+                    gb.RedrawBorder(); // first draw
+                }
             };
         }
 
@@ -63,7 +63,7 @@ namespace AssyntSoftware.WinUI3Controls
                 CreateBorderRoundedRect();
         }
 
-        private void BorderPropertyChanged(DependencyObject sender, DependencyProperty? dp)
+        private void BorderPropertyChanged()
         {
             if (ChildPresenter is null || BorderPath is null)
                 return;
@@ -89,9 +89,10 @@ namespace AssyntSoftware.WinUI3Controls
 
             double halfStrokeThickness = BorderThickness.Left / 2;
             double headingHeight = (HeadingPresenter is null) ? 0.0 : HeadingPresenter.ActualHeight;
+            double headingBaseLineRatio = Math.Clamp(HeadingBaseLineRatio, 0.0, 1.0);
 
             // if "borderOffset" is positive, the top border line extends below the top of the content presenter
-            double borderOffset = -(headingHeight - ((headingHeight * HeadingBaseLineRatio) + halfStrokeThickness));
+            double borderOffset = -(headingHeight - ((headingHeight * headingBaseLineRatio) + halfStrokeThickness));
             double cornerAdjustment = Math.Max(CornerRadius.TopLeft, CornerRadius.TopRight) - BorderThickness.Left;
             double topPadding = cornerAdjustment + borderOffset;
 
@@ -152,7 +153,7 @@ namespace AssyntSoftware.WinUI3Controls
             DependencyProperty.Register(nameof(HeadingBaseLineRatio),
                 typeof(double),
                 typeof(GroupBox),
-                new PropertyMetadata(0.61, (d, e) => ((GroupBox)d).BorderPropertyChanged(d, null)));
+                new PropertyMetadata(0.61, (d, e) => ((GroupBox)d).BorderPropertyChanged()));
 
         /// <summary>
         /// How far down the heading the border line is drawn.
@@ -169,7 +170,7 @@ namespace AssyntSoftware.WinUI3Controls
             DependencyProperty.Register(nameof(HeadingMargin),
                 typeof(double),
                 typeof(GroupBox),
-                new PropertyMetadata(12.0, HeadingMarginPropertyChanged));
+                new PropertyMetadata(16.0, HeadingMarginPropertyChanged));
 
         /// <summary>
         /// The offset from this control's edge to the start of the heading presenter.

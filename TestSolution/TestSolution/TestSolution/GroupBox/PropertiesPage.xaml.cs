@@ -37,11 +37,11 @@ namespace TestSolution.GroupBox
 
         private const double cBorderStartPadding = 4;
         private const double cBorderEndPadding = 3;
-        private const double cHeadingMargin = 12;
+        private const double cHeadingMargin = 16;
         private const double cHeadingBaseLineRatio = 0.61;
         private const double cBorderThickness = 1;
         private static readonly SolidColorBrush sBorderBrush = new SolidColorBrush(Colors.LightGray);
-        private static readonly CornerRadius sCornerRadius = new CornerRadius(4);
+        private static readonly CornerRadius sCornerRadius = new CornerRadius(8);
         private const double cFontSize = 14;
 
 
