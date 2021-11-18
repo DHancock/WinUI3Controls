@@ -94,15 +94,7 @@
         </Grid>
 
         <ScrollViewer Grid.Column="1">
-            <StackPanel Background="LightGray" Padding="20">
-                <StackPanel.Resources>
-                    <DataTemplate x:Name="SmallHeadingText">
-                        <TextBlock Text="{Binding}" FontSize="12"/>
-                    </DataTemplate>
-                    <Style TargetType="Slider">
-                        <Setter Property="HeaderTemplate" Value="{StaticResource SmallHeadingText}"/>
-                    </Style>
-                </StackPanel.Resources>
+            <StackPanel Background="LightGray" Padding="20,20,30,20">
 
                 <Slider x:Name="hm" Header="HeadingMargin property" Minimum="0" Maximum="40" StepFrequency="0.1"/>
                 <Slider x:Name="bsp" Header="BorderStartPadding property" Minimum="0" Maximum="10" StepFrequency="0.1"/>
