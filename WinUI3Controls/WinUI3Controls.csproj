@@ -11,16 +11,17 @@
     <Company>David Hancock</Company>
     <Copyright>2021 David Hancock</Copyright>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>WinUI Controls XAML GroupBox</PackageTags>
+    <PackageTags>WinUI Controls XAML GroupBox WindowsAppSDK</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AnalysisLevel>latest</AnalysisLevel>
-    <Description>Provides a WinUI implementation of a WPF GroupBox control.</Description>
+    <Description>Provides a WinUI implementation of a WPF GroupBox control. 
+Built for use with the Windows App SDK.</Description>
     <RepositoryUrl>https://github.com/DHancock/WinUI3Controls</RepositoryUrl>
     <Authors>David Hancock</Authors>
     <PackageProjectUrl>https://github.com/DHancock/WinUI3Controls</PackageProjectUrl>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
-    <Version>1.0.2</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
