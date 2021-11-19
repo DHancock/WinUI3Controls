@@ -31,3 +31,14 @@ In pre-release form, **WinUI** is contained in the **ProjectReunion** nuget pack
 If you are targeting **ProjectReunion** version 0.8.5 or above, use a WinUIControls library version < 2.0.0
 
 If you are targeting **WindowsAppSDK** version 1.0.0 or above, use a WinUIControls library version >= 2.0.0
+
+#### Release Notes
+
+2.0.0   Change from ProjectReunion to WindowsAppSDK.
+        Added theme resources for light, dark and high contrast themes.
+        The default corner radius changes from 4 to 8.
+        Minor code improvements.
+
+1.0.1    Added the GitHub project URL. No code changes.
+
+1.0.0    Initial release.
