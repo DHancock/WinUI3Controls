@@ -23,3 +23,11 @@ xmlns:w3c="using:AssyntSoftware.WinUI3Controls"
 ```
 
 More worked examples can be found in the [TestSolution](TestSolution)
+
+#### WinUI and Nuget Package Versions
+
+In pre-release form, **WinUI** is contained in the **ProjectReunion** nuget package. Release versions are contained in the **WindowsAppSDK** nuget package. These two aren't compatible therefore:
+
+If you are targeting **ProjectReunion** version 0.8.5 or above, use a WinUIControls library version < 2.0.0
+
+If you are targeting **WindowsAppSDK** version 1.0.0 or above, use a WinUIControls library version >= 2.0.0
