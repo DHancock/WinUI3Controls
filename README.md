@@ -34,11 +34,25 @@ If you are targeting **WindowsAppSDK** version 1.0.0 or above, use a WinUIContro
 
 #### Release Notes
 
-2.0.0   Change from ProjectReunion to WindowsAppSDK.
-        Added theme resources for light, dark and high contrast themes.
-        The default corner radius changes from 4 to 8.
-        Minor code improvements.
-
-1.0.1    Added the GitHub project URL. No code changes.
-
-1.0.0    Initial release.
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th align="left">Changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.0.0</td>
+<td>Change from ProjectReunion to WindowsAppSDK.<br>Added theme resources for light, dark and high contrast themes.<br>The default corner radius changes from 4 to 8.<br>Minor code improvements.</td>
+</tr>
+<tr>
+<td>1.0.1</td>
+<td>Added the GitHub project URL. No code changes.</td>
+</tr>
+<tr>
+<td>1.0.0</td>
+<td>Initial release.</td>
+</tr>
+</tbody>
+</table>
