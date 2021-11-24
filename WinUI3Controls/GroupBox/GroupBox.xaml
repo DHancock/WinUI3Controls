@@ -5,7 +5,7 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="HighContrast">
-            <StaticResource x:Key="GroupBoxBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush" />
+            <SolidColorBrush x:Key="GroupBoxBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush x:Key="GroupBoxBorderBrush">#FF484848</SolidColorBrush>
