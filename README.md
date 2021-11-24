@@ -34,28 +34,12 @@ If you are targeting **WindowsAppSDK** version 1.0.0 or above, use a WinUIContro
 
 ### Release Notes
 
-<table>
-<thead>
-<tr>
-<th>Version</th>
-<th align="left">Changes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2.0.0</td>
-<td>Change from ProjectReunion to WindowsAppSDK.<br>Added theme resources for light, dark and high contrast themes.<br>The default corner radius changes from 4 to 8.*<br>Minor code improvements.</td>
-</tr>
-<tr>
-<td>1.0.1</td>
-<td>Added the GitHub project URL. No code changes.</td>
-</tr>
-<tr>
-<td>1.0.0</td>
-<td>Initial release.</td>
-</tr>
-</tbody>
-</table>
+|Version|Changes|
+|-------|:------|
+|2.0.1|Fix the high contrast theme brush.| 
+|2.0.0|Change from ProjectReunion to WindowsAppSDK.<br>Added theme resources for light, dark and high contrast themes.<br>The default corner radius changes from 4 to 8.\*<br>Minor code improvements.|
+|1.0.1|Added the GitHub project URL. No code changes.|
+|1.0.0|Initial release.|
 
 
 \* The GroupBox corner radius was defined by the system resource "OverlayCornerRadius" which increased to 8 with WindowsAppSDK 1.0.0. I decided to keep the new radius because I think it should increase to accommodate the rounded corners of WinUI controls. As with all UI designs, that is a subjective call. If you prefer the default WPF look, add this implicit style to your App.xaml file:
