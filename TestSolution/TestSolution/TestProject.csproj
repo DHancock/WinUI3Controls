@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
@@ -9,6 +9,8 @@
     <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
     <UseWinUI>true</UseWinUI>
     <Nullable>enable</Nullable>
+	<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
+	<WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="GroupBox\DataTemplateSelectorPage.xaml" />
@@ -25,9 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="AssyntSoftware.WinUI3Controls">
-      <HintPath>..\..\..\WinUI3Controls\bin\Debug\net5.0-windows10.0.19041.0\AssyntSoftware.WinUI3Controls.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\WinUI3Controls\WinUI3Controls.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,4 +41,11 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+
+	<!-- Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
+       Tools extension to be activated for this project even if the Windows App SDK Nuget
+       package has not yet been restored -->
+	<ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnablePreviewMsixTooling)'=='true'">
+		<ProjectCapability Include="Msix" />
+	</ItemGroup>	
 </Project>
