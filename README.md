@@ -3,7 +3,7 @@
 A control library for WinUI 3
 
 It currently contains a single control which provides a WinUI implementation of the **WPF GroupBox** control.\
-The library can be downloaded from NuGet. Search for "AssyntSoftware.WinUI3Controls"\
+The library is available as a [NuGet package](https://www.nuget.org/packages/AssyntSoftware.WinUI3Controls/).\
 To use the control:
 
 1) Add a xmlns identifier for the package to your container
