@@ -7,7 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:w3c="using:AssyntSoftware.WinUI3Controls"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    NavigationCacheMode="Required">
     
     <Grid x:Name="RootPanel">
         <Grid.Resources>
@@ -62,7 +63,10 @@
                             FontSize="{x:Bind fs.Value, Mode=OneWay}">
                         <w3c:GroupBox.Transitions>
                             <TransitionCollection>
-                                <EntranceThemeTransition IsStaggeringEnabled="True" />
+                                <!-- only to prove it works -->
+                                <EntranceThemeTransition 
+                                    FromHorizontalOffset="200" 
+                                    FromVerticalOffset="200"/>
                             </TransitionCollection>
                         </w3c:GroupBox.Transitions>
                         <Grid>

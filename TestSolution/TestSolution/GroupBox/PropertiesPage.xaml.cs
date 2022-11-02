@@ -27,12 +27,21 @@ namespace TestSolution.GroupBox
     /// </summary>
     public sealed partial class PropertiesPage : Page
     {
+        private bool firstLoad = true;
+
         public PropertiesPage()
         {
             this.InitializeComponent();
-            RootPanel.Loaded += (s, e) => InitialiseControls();
-        }
 
+            RootPanel.Loaded += (s, e) =>
+            {
+                if (firstLoad)
+                {
+                    firstLoad = false;
+                    InitialiseControls();
+                }
+            };
+        }
 
 
         private const double cBorderStartPadding = 4;
