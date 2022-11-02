@@ -36,6 +36,7 @@ If you are targeting **WindowsAppSDK** version 1.0.0 or above, use a WinUIContro
 
 |Version|Changes|
 |-------|:------|
+|2.0.2|Fix adding size changed event handlers [#18](https://github.com/DHancock/WinUI3Controls/pull/18).|
 |2.0.1|Fix the high contrast theme brush.| 
 |2.0.0|Change from ProjectReunion to WindowsAppSDK.<br>Added theme resources for light, dark and high contrast themes.<br>The default corner radius changes from 4 to 8.\*<br>Minor code improvements.|
 |1.0.1|Added the GitHub project URL. No code changes.|
