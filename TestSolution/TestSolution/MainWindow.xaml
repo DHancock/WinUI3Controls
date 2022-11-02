@@ -21,7 +21,7 @@
             <NavigationViewItem Content="DataTemplateSelector" Tag="GroupBox.DataTemplateSelectorPage" AccessKey="D" KeyTipPlacementMode="Bottom"/>
         </NavigationView.MenuItems>
 
-        <Frame x:Name="ContentFrame"/>
+        <Frame x:Name="ContentFrame" CacheSize="{x:Bind RootNavigationView.MenuItems.Count}"/>
     </NavigationView>
 
 </Window>
