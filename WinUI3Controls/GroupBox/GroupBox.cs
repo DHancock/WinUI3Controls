@@ -47,9 +47,9 @@ namespace AssyntSoftware.WinUI3Controls
             };
 
             SizeChanged += (s, e) => ((GroupBox)s).RedrawBorder();
-            
+
             // initialise
-            BorderPropertyChanged();
+            Loaded += (s, e) => BorderPropertyChanged();
         }
 
         private void RedrawBorder()
