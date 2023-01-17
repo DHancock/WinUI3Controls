@@ -32,6 +32,11 @@
                 <Setter Property="AutomationProperties.Name" Value="{x:Bind headingText.Text}"/>
             </Style>
 
+            <TeachingTip x:Name="GroupBoxTeachingTip" 
+                            IsOpen="{x:Bind SettingsToggleSwitch.IsOn, Mode=TwoWay}" 
+                            Target="{x:Bind StyledGroupBox}"
+                            Title="Title"
+                            Subtitle="Sub title text for the group box"/>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -44,8 +49,8 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <w3c:GroupBox Style="{StaticResource exampleStyle}" Grid.Row="1" Grid.Column="1">
-            <ToggleSwitch/>
+        <w3c:GroupBox x:Name="StyledGroupBox" Style="{StaticResource exampleStyle}" Grid.Row="1" Grid.Column="1">
+            <ToggleSwitch x:Name="SettingsToggleSwitch" OffContent="Closed" OnContent="Open" IsOn="False"/>
         </w3c:GroupBox>
     </Grid>
 </Page>
