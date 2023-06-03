@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="TestSolution.SimpleColorPicker.SimpleColorPickerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TestSolution.SimpleColorPicker"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:w3c="using:AssyntSoftware.WinUI3Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.Resources>
+            <Style x:Name="LargeCellStyle"  TargetType="Border">
+                <Setter Property="Width" Value="40"/>
+                <Setter Property="Height" Value="40"/>
+                <Setter Property="Margin" Value="3"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="{ThemeResource ButtonBorderThemeBrush}"/>
+                <Setter Property="CornerRadius" Value="20"/>
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Arse"/>
+        <w3c:SimpleColorPicker Grid.Row="1" Color="Green" IndicatorWidth="150"/>
+        
+        <TextBlock Text="Arse2" Grid.Row="2" />
+
+        <w3c:SimpleColorPicker Grid.Row="3" Color="Red" IndicatorWidth="150" CellStyle="{StaticResource LargeCellStyle}" CellsPerColumn="2" ZoomFactor="1.25">
+            <w3c:SimpleColorPicker.Palette>
+                <w3c:ColorCollection>
+                    <Color>#FF0000</Color>
+                    <Color>#00FF00</Color>
+                    <Color>#0000FF</Color>
+                    <Color>#FFFF00</Color>
+                    <Color>#00FFFF</Color>
+                </w3c:ColorCollection>
+            </w3c:SimpleColorPicker.Palette>
+        </w3c:SimpleColorPicker>
+    </Grid>
+</Page>

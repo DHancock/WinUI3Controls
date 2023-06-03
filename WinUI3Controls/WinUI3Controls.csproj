@@ -39,16 +39,6 @@ Built for use with the Windows App SDK.</Description>
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="GroupBox.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="GroupBox\GroupBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-
-  <ItemGroup>
     <Page Update="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

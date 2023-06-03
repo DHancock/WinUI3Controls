@@ -7,23 +7,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <!--<Window.SystemBackdrop>
+        <MicaBackdrop/>
+    </Window.SystemBackdrop>-->
+    
     <NavigationView
         x:Name="RootNavigationView"
-        PaneDisplayMode="Top"
+        PaneDisplayMode="Left"
         IsBackButtonVisible="Collapsed"
         IsSettingsVisible="False"
         SelectionFollowsFocus="Disabled"
         SelectionChanged="RootNavigationView_SelectionChanged">
 
         <NavigationView.MenuItems>
-            <NavigationViewItem Content="Properties" Tag="GroupBox.PropertiesPage" AccessKey="P" KeyTipPlacementMode="Bottom"/>
-            <NavigationViewItem Content="Style" Tag="GroupBox.StylePage" AccessKey="S" KeyTipPlacementMode="Bottom"/>
-            <NavigationViewItem Content="DataTemplateSelector" Tag="GroupBox.DataTemplateSelectorPage" AccessKey="D" KeyTipPlacementMode="Bottom"/>
+            <NavigationViewItem Content="Group Box" SelectsOnInvoked="False">
+                <NavigationViewItem.MenuItems>
+                    <NavigationViewItem Content="Properties" Tag="GroupBox.PropertiesPage" AccessKey="P" KeyTipPlacementMode="Bottom"/>
+                    <NavigationViewItem Content="Style" Tag="GroupBox.StylePage" AccessKey="S" KeyTipPlacementMode="Bottom"/>
+                    <NavigationViewItem Content="DataTemplateSelector" Tag="GroupBox.DataTemplateSelectorPage" AccessKey="D" KeyTipPlacementMode="Bottom"/>
+                </NavigationViewItem.MenuItems>
+            </NavigationViewItem>
+            <NavigationViewItem Content="Simple Color Picker" Tag="SimpleColorPicker.SimpleColorPickerPage" AccessKey="I" KeyTipPlacementMode="Bottom"/>
         </NavigationView.MenuItems>
-
         <Frame x:Name="ContentFrame" CacheSize="{x:Bind RootNavigationView.MenuItems.Count}"/>
     </NavigationView>
-
 </Window>
 
 
