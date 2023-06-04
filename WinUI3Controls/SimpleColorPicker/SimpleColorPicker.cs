@@ -54,7 +54,7 @@ namespace AssyntSoftware.WinUI3Controls
 
                 Flyout? flyout = GetTemplateChild("PART_Flyout") as Flyout;
 
-                if (flyout is not null)
+                if ((flyout is not null) && (flyoutPresenterStyle is not null))
                     flyout.FlyoutPresenterStyle = flyoutPresenterStyle;
 
                 Grid = GetTemplateChild("PART_Grid") as VariableSizedWrapGrid;
