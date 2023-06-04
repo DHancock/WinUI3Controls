@@ -27,7 +27,8 @@ namespace AssyntSoftware.WinUI3Controls
         private VariableSizedWrapGrid? Grid;
 
         private Style? cellStyle;
-        
+        private Style? flyoutPresenterStyle;
+
         public SimpleColorPicker()
         {
             this.DefaultStyleKey = typeof(SimpleColorPicker);
@@ -50,6 +51,11 @@ namespace AssyntSoftware.WinUI3Controls
                     IndicatorBorder.Width = IndicatorWidth;
                     IndicatorBorder.Background = new SolidColorBrush(Color);
                 }
+
+                Flyout? flyout = GetTemplateChild("PART_Flyout") as Flyout;
+
+                if (flyout is not null)
+                    flyout.FlyoutPresenterStyle = flyoutPresenterStyle;
 
                 Grid = GetTemplateChild("PART_Grid") as VariableSizedWrapGrid;
 
@@ -284,11 +290,21 @@ namespace AssyntSoftware.WinUI3Controls
 
         public Style? CellStyle
         {
-            get => cellStyle;
+            private get => cellStyle;
             set
             {
                 if ((value is not null) && (value.TargetType == typeof(Border)))
                     cellStyle = value;
+            }
+        }
+
+        public Style? FlyoutPresenterStyle
+        {
+            private get => flyoutPresenterStyle;
+            set
+            {
+                if ((value is not null) && (value.TargetType == typeof(FlyoutPresenter)))
+                    flyoutPresenterStyle = value;
             }
         }
 

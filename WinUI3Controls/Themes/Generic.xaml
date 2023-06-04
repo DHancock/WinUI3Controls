@@ -6,7 +6,7 @@
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="GroupBoxBorderBrush" Color="{ThemeResource SystemColorWindowTextColor}"/>
-            <SolidColorBrush x:Key="SimpleColorPickerFlyoutBackground" Color="White"/>
+            <SolidColorBrush x:Key="SimpleColorPickerFlyoutBackground" Color="{ThemeResource SystemColorWindowColor}"/>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <SolidColorBrush x:Key="GroupBoxBorderBrush">LightGray</SolidColorBrush>
@@ -14,7 +14,7 @@
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush x:Key="GroupBoxBorderBrush">#FF484848</SolidColorBrush>
-            <SolidColorBrush x:Key="SimpleColorPickerFlyoutBackground" Color="DimGray"/>
+            <SolidColorBrush x:Key="SimpleColorPickerFlyoutBackground" Color="#FF484848"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
@@ -68,7 +68,7 @@
                         <SplitButton x:Name="PART_PickButton" Height="{TemplateBinding Height}" Padding="0">
                             <Border x:Name="PART_IndicatorBorder" Width="{TemplateBinding IndicatorWidth}" Height="{TemplateBinding Height}" Margin="0" CornerRadius="4,0,0,4"/>
                             <SplitButton.Flyout>
-                                <Flyout Placement="Bottom">
+                                <Flyout x:Name="PART_Flyout" Placement="Bottom">
                                     <Flyout.FlyoutPresenterStyle>
                                         <Style TargetType="FlyoutPresenter">
                                             <Setter Property="Background" Value="{ThemeResource SimpleColorPickerFlyoutBackground}"/>
