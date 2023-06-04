@@ -383,10 +383,12 @@ namespace AssyntSoftware.WinUI3Controls
             {
                 if ((DateTime.UtcNow - lastKeyRepeat) > TimeSpan.FromMilliseconds(125)) // throttle focus changes
                 {
+                    lastKeyRepeat = DateTime.UtcNow;
+
                     int gridTotal =  Grid.Children.Count;
-                    int columnCount = GetColumnCount(gridTotal); // the number of columns
+                    int columnCount = GetColumnCount(gridTotal);
                     int rowCount = GetRowCount();
-                    int matrixTotal = columnCount * rowCount;  // if gridTotal < matrixTotal then the last column isn't full 
+                    int matrixTotal = columnCount * rowCount;  // if gridTotal < matrixTotal then the last row/column isn't full 
 
                     int index = (int)((Border)sender).Tag;
                     int newIndex;
@@ -396,33 +398,42 @@ namespace AssyntSoftware.WinUI3Controls
                         newIndex = Clamp2DVerticalIndex(index - columnCount, columnCount, matrixTotal);
 
                         if (newIndex >= gridTotal)
+                        {
                             newIndex = Clamp2DVerticalIndex(newIndex - columnCount, columnCount, matrixTotal);
+                        }
                     }
                     else if ((Grid.Orientation == Orientation.Horizontal) && (e.Key == VirtualKey.Down) || ((Grid.Orientation == Orientation.Vertical) && (e.Key == VirtualKey.Right)))
                     {
                         newIndex = Clamp2DVerticalIndex(index + columnCount, columnCount, matrixTotal);
 
                         if (newIndex >= gridTotal)
-                            newIndex = 0;
+                        {
+                            newIndex = Clamp2DVerticalIndex(newIndex + columnCount, columnCount, matrixTotal);
+                        }
                     }
                     else if ((Grid.Orientation == Orientation.Horizontal) && (e.Key == VirtualKey.Left) || ((Grid.Orientation == Orientation.Vertical) && (e.Key == VirtualKey.Up)))
                     {
                         newIndex = Clamp2DHorizontalIndex(index - 1, matrixTotal);
 
-                        if (newIndex >= gridTotal)
-                            newIndex -= 1;
+                        while (newIndex >= gridTotal)
+                        {
+                            newIndex = Clamp2DHorizontalIndex(newIndex - 1, matrixTotal);
+                        }
                     }
                     else
                     {
                         newIndex = Clamp2DHorizontalIndex(index + 1, matrixTotal);
 
-                        if (newIndex >= gridTotal)
+                        while (newIndex >= gridTotal)
+                        {
                             newIndex = Clamp2DHorizontalIndex(newIndex + 1, matrixTotal);
+                        }
                     }
 
-                    lastKeyRepeat = DateTime.UtcNow;
+                    int gridIndex = Math.Clamp(newIndex, 0, gridTotal - 1);
+                    Debug.Assert(gridIndex == newIndex);
 
-                    Grid.Children[newIndex].Focus(FocusState.Programmatic);
+                    Grid.Children[gridIndex].Focus(FocusState.Programmatic);
                 }
             }
         }
