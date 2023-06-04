@@ -26,7 +26,11 @@ namespace TestSolution
             this.InitializeComponent();
 
             if (RootNavigationView.SelectionFollowsFocus == NavigationViewSelectionFollowsFocus.Disabled)
-                RootNavigationView.SelectedItem = RootNavigationView.MenuItems[0];
+            {
+                NavigationViewItem parent = (NavigationViewItem)RootNavigationView.MenuItems[0];
+                parent.IsExpanded = true;
+                RootNavigationView.SelectedItem = parent.MenuItems[0];
+            }
         }
 
 

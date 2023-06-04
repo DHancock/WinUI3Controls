@@ -7,9 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <!--<Window.SystemBackdrop>
+    <Window.SystemBackdrop>
         <MicaBackdrop/>
-    </Window.SystemBackdrop>-->
+    </Window.SystemBackdrop>
     
     <NavigationView
         x:Name="RootNavigationView"
