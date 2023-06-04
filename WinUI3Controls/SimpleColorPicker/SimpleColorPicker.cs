@@ -120,7 +120,7 @@ namespace AssyntSoftware.WinUI3Controls
         public Orientation PaletteOrientation
         {
             get { return (Orientation)GetValue(PaletteOrientationProperty); }
-            set { SetValue(ZoomFactorProperty, value); }
+            set { SetValue(PaletteOrientationProperty, value); }
         }
 
         public static readonly DependencyProperty PaletteOrientationProperty =
