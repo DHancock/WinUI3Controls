@@ -91,9 +91,12 @@ namespace AssyntSoftware.WinUI3Controls
         private static void ColorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             SimpleColorPicker picker = (SimpleColorPicker)d;
+            Color color = (Color)e.NewValue;
 
             if (picker.indicatorBorder is not null)
-                picker.indicatorBorder.Background = new SolidColorBrush((Color)e.NewValue);
+                picker.indicatorBorder.Background = new SolidColorBrush(color);
+
+            picker.ColorChanged?.Invoke(picker, color);
         }
 
         public double IndicatorWidth
@@ -362,10 +365,7 @@ namespace AssyntSoftware.WinUI3Controls
             Color newColor = ((SolidColorBrush)border.Background).Color;
 
             if (newColor != Color)
-            {
                 Color = newColor;
-                ColorChanged?.Invoke(this, newColor);
-            }
 
             SetTabStopStateWithinFlyout(enable: false);
             pickButton?.Flyout.Hide();
