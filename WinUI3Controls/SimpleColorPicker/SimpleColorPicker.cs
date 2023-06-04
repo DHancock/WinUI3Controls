@@ -22,9 +22,9 @@ namespace AssyntSoftware.WinUI3Controls
         public event TypedEventHandler<SimpleColorPicker, Color>? ColorChanged;
 
         private DateTime lastKeyRepeat = DateTime.UtcNow;
-        private SplitButton? PickButton;
-        private Border? IndicatorBorder;
-        private VariableSizedWrapGrid? Grid;
+        private SplitButton? pickButton;
+        private Border? indicatorBorder;
+        private VariableSizedWrapGrid? grid;
 
         private Style? cellStyle;
         private Style? flyoutPresenterStyle;
@@ -38,35 +38,38 @@ namespace AssyntSoftware.WinUI3Controls
         {
             base.OnApplyTemplate();
 
-            PickButton = GetTemplateChild("PART_PickButton") as SplitButton;
+            pickButton = GetTemplateChild("PART_PickButton") as SplitButton;
 
-            if (PickButton is not null)
+            if (pickButton is not null)
             {
-                PickButton.Click += PickButton_Click;
+                pickButton.Click += PickButton_Click;
 
-                IndicatorBorder = GetTemplateChild("PART_IndicatorBorder") as Border;
+                indicatorBorder = pickButton.Content as Border;
 
-                if (IndicatorBorder is not null)
+                if (indicatorBorder is not null)
                 {
-                    IndicatorBorder.Width = IndicatorWidth;
-                    IndicatorBorder.Background = new SolidColorBrush(Color);
+                    indicatorBorder.Width = IndicatorWidth;
+                    indicatorBorder.Background = new SolidColorBrush(Color);
                 }
 
-                Flyout? flyout = GetTemplateChild("PART_Flyout") as Flyout;
+                Flyout? flyout = (Flyout)pickButton.Flyout;
 
-                if ((flyout is not null) && (FlyoutPresenterStyle is not null))
-                    flyout.FlyoutPresenterStyle = FlyoutPresenterStyle;
-
-                Grid = GetTemplateChild("PART_Grid") as VariableSizedWrapGrid;
-
-                if (Grid is not null)
+                if (flyout is not null)
                 {
-                    Grid.Orientation = PaletteOrientation;
+                    if (FlyoutPresenterStyle is not null)
+                        flyout.FlyoutPresenterStyle = FlyoutPresenterStyle;
 
-                    if (IsCustomPalette)
-                        CreateCustomPaletteGrid();
-                    else
-                        CreateDefaultPaletteGrid();
+                    grid = flyout.Content as VariableSizedWrapGrid;
+
+                    if (grid is not null)
+                    {
+                        grid.Orientation = PaletteOrientation;
+
+                        if (IsCustomPalette)
+                            CreateCustomPaletteGrid();
+                        else
+                            CreateDefaultPaletteGrid();
+                    }
                 }
             }
         }
@@ -89,8 +92,8 @@ namespace AssyntSoftware.WinUI3Controls
         {
             SimpleColorPicker picker = (SimpleColorPicker)d;
 
-            if (picker.IndicatorBorder is not null)
-                picker.IndicatorBorder.Background = new SolidColorBrush((Color)e.NewValue);
+            if (picker.indicatorBorder is not null)
+                picker.indicatorBorder.Background = new SolidColorBrush((Color)e.NewValue);
         }
 
         public double IndicatorWidth
@@ -168,18 +171,18 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void CreateCustomPaletteGrid()
         {
-            Debug.Assert(Grid is not null);
+            Debug.Assert(grid is not null);
 
-            if (Grid.Children.Count == 0)
+            if (grid.Children.Count == 0)
             {
                 int index = 0;
                 int total = Palette.Count();
 
-                Grid.MaximumRowsOrColumns = GetColumnCount(total);
+                grid.MaximumRowsOrColumns = GetColumnCount(total);
 
                 for (int colorSample = 0; colorSample < CellsPerColumn; colorSample++)
                 {
-                    for (int numColors = 0; numColors < Grid.MaximumRowsOrColumns; numColors++)
+                    for (int numColors = 0; numColors < grid.MaximumRowsOrColumns; numColors++)
                     {
                         Border border = CreateBorder();
 
@@ -190,7 +193,7 @@ namespace AssyntSoftware.WinUI3Controls
                             border.Background = new SolidColorBrush(Palette.ElementAt(gridIndex));
                             border.Tag = index++;
 
-                            Grid.Children.Add(border);
+                            grid.Children.Add(border);
                         }
                     }
                 }
@@ -199,41 +202,41 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void CreateDefaultPaletteGrid()
         {
-            Debug.Assert(Grid is not null);
+            Debug.Assert(grid is not null);
 
-            if (Grid.Children.Count == 0)
+            if (grid.Children.Count == 0)
             {
                 int index = 0;
 
                 if (IsMiniPalette)
                 {
-                    Grid.MaximumRowsOrColumns = sMiniPaletteColumnOffsets.Length; // columns
+                    grid.MaximumRowsOrColumns = sMiniPaletteColumnOffsets.Length; // columns
 
                     for (int colorSample = 0; colorSample < cDefaultSamplesPerColor; colorSample++)
                     {
-                        for (int numColors = 0; numColors < Grid.MaximumRowsOrColumns; numColors++)
+                        for (int numColors = 0; numColors < grid.MaximumRowsOrColumns; numColors++)
                         {
                             Border border = CreateBorder();
                             border.Background = new SolidColorBrush(ConvertToColor(sRGB[sMiniPaletteColumnOffsets[numColors] + colorSample]));
                             border.Tag = index++;
 
-                            Grid.Children.Add(border);
+                            grid.Children.Add(border);
                         }
                     }
                 }
                 else
                 {
-                    Grid.MaximumRowsOrColumns = sRGB.Length / cDefaultSamplesPerColor; // columns
+                    grid.MaximumRowsOrColumns = sRGB.Length / cDefaultSamplesPerColor; // columns
 
                     for (int colorSample = 0; colorSample < cDefaultSamplesPerColor; colorSample++)
                     {
-                        for (int numColors = 0; numColors < Grid.MaximumRowsOrColumns; numColors++)
+                        for (int numColors = 0; numColors < grid.MaximumRowsOrColumns; numColors++)
                         {
                             Border border = CreateBorder();
                             border.Background = new SolidColorBrush(ConvertToColor(sRGB[(cDefaultSamplesPerColor * numColors) + colorSample]));
                             border.Tag = index++;
 
-                            Grid.Children.Add(border);
+                            grid.Children.Add(border);
                         }
                     }
                 }
@@ -365,7 +368,7 @@ namespace AssyntSoftware.WinUI3Controls
             }
 
             SetTabStopStateWithinFlyout(enable: false);
-            PickButton?.Flyout.Hide();
+            pickButton?.Flyout.Hide();
         }
 
 
@@ -377,7 +380,7 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void Border_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            Debug.Assert(Grid is not null);
+            Debug.Assert(grid is not null);
 
             if ((e.Key == VirtualKey.Up) || (e.Key == VirtualKey.Down) || (e.Key == VirtualKey.Left) || (e.Key == VirtualKey.Right))
             {
@@ -385,7 +388,7 @@ namespace AssyntSoftware.WinUI3Controls
                 {
                     lastKeyRepeat = DateTime.UtcNow;
 
-                    int gridTotal =  Grid.Children.Count;
+                    int gridTotal =  grid.Children.Count;
                     int columnCount = GetColumnCount(gridTotal);
                     int rowCount = GetRowCount();
                     int matrixTotal = columnCount * rowCount;  // if gridTotal < matrixTotal then the last row/column isn't full 
@@ -393,7 +396,7 @@ namespace AssyntSoftware.WinUI3Controls
                     int index = (int)((Border)sender).Tag;
                     int newIndex;
 
-                    if ((Grid.Orientation == Orientation.Horizontal) && (e.Key == VirtualKey.Up) || ((Grid.Orientation == Orientation.Vertical) && (e.Key == VirtualKey.Left)))
+                    if ((grid.Orientation == Orientation.Horizontal) && (e.Key == VirtualKey.Up) || ((grid.Orientation == Orientation.Vertical) && (e.Key == VirtualKey.Left)))
                     {
                         newIndex = Clamp2DVerticalIndex(index - columnCount, columnCount, matrixTotal);
 
@@ -402,7 +405,7 @@ namespace AssyntSoftware.WinUI3Controls
                             newIndex = Clamp2DVerticalIndex(newIndex - columnCount, columnCount, matrixTotal);
                         }
                     }
-                    else if ((Grid.Orientation == Orientation.Horizontal) && (e.Key == VirtualKey.Down) || ((Grid.Orientation == Orientation.Vertical) && (e.Key == VirtualKey.Right)))
+                    else if ((grid.Orientation == Orientation.Horizontal) && (e.Key == VirtualKey.Down) || ((grid.Orientation == Orientation.Vertical) && (e.Key == VirtualKey.Right)))
                     {
                         newIndex = Clamp2DVerticalIndex(index + columnCount, columnCount, matrixTotal);
 
@@ -411,7 +414,7 @@ namespace AssyntSoftware.WinUI3Controls
                             newIndex = Clamp2DVerticalIndex(newIndex + columnCount, columnCount, matrixTotal);
                         }
                     }
-                    else if ((Grid.Orientation == Orientation.Horizontal) && (e.Key == VirtualKey.Left) || ((Grid.Orientation == Orientation.Vertical) && (e.Key == VirtualKey.Up)))
+                    else if ((grid.Orientation == Orientation.Horizontal) && (e.Key == VirtualKey.Left) || ((grid.Orientation == Orientation.Vertical) && (e.Key == VirtualKey.Up)))
                     {
                         newIndex = Clamp2DHorizontalIndex(index - 1, matrixTotal);
 
@@ -433,7 +436,7 @@ namespace AssyntSoftware.WinUI3Controls
                     int gridIndex = Math.Clamp(newIndex, 0, gridTotal - 1);
                     Debug.Assert(gridIndex == newIndex);
 
-                    Grid.Children[gridIndex].Focus(FocusState.Programmatic);
+                    grid.Children[gridIndex].Focus(FocusState.Programmatic);
                 }
             }
         }
@@ -470,9 +473,9 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void SetTabStopStateWithinFlyout(bool enable)
         {
-            Debug.Assert(Grid is not null);
+            Debug.Assert(grid is not null);
 
-            foreach (UIElement child in Grid.Children)
+            foreach (UIElement child in grid.Children)
                 child.IsTabStop = enable;
         }
 

@@ -66,9 +66,9 @@
                 <ControlTemplate TargetType="local:SimpleColorPicker">
                     <Grid>
                         <SplitButton x:Name="PART_PickButton" Height="{TemplateBinding Height}" Padding="0">
-                            <Border x:Name="PART_IndicatorBorder" Width="{TemplateBinding IndicatorWidth}" Height="{TemplateBinding Height}" Margin="0" CornerRadius="4,0,0,4"/>
+                            <Border Width="{TemplateBinding IndicatorWidth}" Height="{TemplateBinding Height}" Margin="0" CornerRadius="4,0,0,4"/>
                             <SplitButton.Flyout>
-                                <Flyout x:Name="PART_Flyout" Placement="Bottom">
+                                <Flyout Placement="Bottom">
                                     <Flyout.FlyoutPresenterStyle>
                                         <Style TargetType="FlyoutPresenter">
                                             <Setter Property="Background" Value="{ThemeResource SimpleColorPickerFlyoutBackground}"/>
@@ -76,7 +76,7 @@
                                             <Setter Property="Padding" Value="6"/>
                                         </Style>
                                     </Flyout.FlyoutPresenterStyle>
-                                    <VariableSizedWrapGrid x:Name="PART_Grid">
+                                    <VariableSizedWrapGrid>
                                         <VariableSizedWrapGrid.Resources>
                                             <Style TargetType="Border">
                                                 <Setter Property="Width" Value="20"/>
