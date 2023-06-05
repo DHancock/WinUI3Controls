@@ -7,9 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Window.SystemBackdrop>
+    <!--<Window.SystemBackdrop>
         <MicaBackdrop/>
-    </Window.SystemBackdrop>
+    </Window.SystemBackdrop>-->
     
     <NavigationView
         x:Name="RootNavigationView"
@@ -21,13 +21,20 @@
 
         <NavigationView.MenuItems>
             <NavigationViewItem Content="Group Box" SelectsOnInvoked="False">
+                <NavigationViewItem.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE16F; "/>
+                </NavigationViewItem.Icon>
                 <NavigationViewItem.MenuItems>
                     <NavigationViewItem Content="Properties" Tag="GroupBox.PropertiesPage" AccessKey="P" KeyTipPlacementMode="Bottom"/>
                     <NavigationViewItem Content="Style" Tag="GroupBox.StylePage" AccessKey="S" KeyTipPlacementMode="Bottom"/>
                     <NavigationViewItem Content="DataTemplateSelector" Tag="GroupBox.DataTemplateSelectorPage" AccessKey="D" KeyTipPlacementMode="Bottom"/>
                 </NavigationViewItem.MenuItems>
             </NavigationViewItem>
-            <NavigationViewItem Content="Simple Color Picker" Tag="SimpleColorPicker.SimpleColorPickerPage" AccessKey="I" KeyTipPlacementMode="Bottom"/>
+            <NavigationViewItem Content="Simple Color Picker" Tag="SimpleColorPicker.SimpleColorPickerPage" AccessKey="I" KeyTipPlacementMode="Bottom">
+                <NavigationViewItem.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE160;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
         </NavigationView.MenuItems>
         <Frame x:Name="ContentFrame" CacheSize="{x:Bind RootNavigationView.MenuItems.Count}"/>
     </NavigationView>
