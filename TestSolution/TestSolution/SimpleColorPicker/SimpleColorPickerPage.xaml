@@ -13,27 +13,41 @@
     <ScrollViewer>
         <Grid Padding="15,15,30,15">
             <Grid.Resources>
-                <Style x:Name="LargeCellStyle"  TargetType="Border">
-                    <Setter Property="Width" Value="40"/>
-                    <Setter Property="Height" Value="40"/>
-                    <Setter Property="Margin" Value="6"/>
-                    <Setter Property="BorderThickness" Value="1"/>
-                    <Setter Property="BorderBrush" Value="{ThemeResource ButtonBorderThemeBrush}"/>
-                    <Setter Property="CornerRadius" Value="20"/>
-                </Style>
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="HighContrast">
+                            <SolidColorBrush x:Key="FlyoutBackground" Color="{ThemeResource SystemColorWindowColor}"/>
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="Light">
+                            <SolidColorBrush x:Key="FlyoutBackground" Color="GhostWhite"/>
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="Dark">
+                            <SolidColorBrush x:Key="FlyoutBackground" Color="#FF484848"/>
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+                
+                    <Style x:Name="LargeCellStyle"  TargetType="Border">
+                        <Setter Property="Width" Value="40"/>
+                        <Setter Property="Height" Value="40"/>
+                        <Setter Property="Margin" Value="6"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="BorderBrush" Value="{ThemeResource ButtonBorderThemeBrush}"/>
+                        <Setter Property="CornerRadius" Value="20"/>
+                    </Style>
 
-                <Style x:Name="PresenterStyle"  TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenterStyle}">
-                    <Setter Property="MinWidth" Value="20"/>
-                    <Setter Property="Background" Value="{ThemeResource SystemColorWindowColor}"/>
-                    <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}"/>
-                    <Setter Property="Padding" Value="6"/>
-                </Style>
+                    <Style x:Name="PresenterStyle"  TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenterStyle}">
+                        <Setter Property="MinWidth" Value="20"/>
+                        <Setter Property="Background" Value="{ThemeResource FlyoutBackground}"/>
+                        <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}"/>
+                        <Setter Property="Padding" Value="6"/>
+                    </Style>
 
-                <Style TargetType="TextBlock">
-                    <Setter Property="Margin" Value="0,0,10,0"/>
-                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Margin" Value="0,0,10,0"/>
+                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                </ResourceDictionary>
             </Grid.Resources>
 
             <Grid.RowDefinitions>
@@ -62,6 +76,8 @@
 
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="40"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -83,7 +99,7 @@
             <TextBlock Grid.Row="7" Text="Vertical mini palette:"/>
             <w3c:SimpleColorPicker Grid.Row="7" Grid.Column="1" IsMiniPalette="True" PaletteOrientation="Vertical" Color="{x:Bind BC, Mode=TwoWay}"/>
 
-            <TextBlock Grid.Row="9" Text="Custom palette:"/>
+            <TextBlock Grid.Row="9" Text="Custom Xaml palette:"/>
             <w3c:SimpleColorPicker Grid.Row="9" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" CellsPerColumn="3" ZoomFactor="1.35" PaletteOrientation="Vertical" FlyoutPresenterStyle="{StaticResource PresenterStyle}">
                 <w3c:SimpleColorPicker.Palette>
                     <w3c:ColorCollection>
@@ -100,8 +116,11 @@
                 </w3c:SimpleColorPicker.Palette>
             </w3c:SimpleColorPicker>
 
-            <TextBlock Grid.Row="11" Text="Various styles:"/>
-            <w3c:SimpleColorPicker Grid.Row="11" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" CellStyle="{StaticResource LargeCellStyle}" FlyoutPresenterStyle="{StaticResource DefaultFlyoutPresenterStyle}" CellsPerColumn="3" ZoomFactor="1.35" PaletteOrientation="Vertical" IndicatorWidth="64">
+            <TextBlock Grid.Row="11" Text="Custom data bound palette:"/>
+            <w3c:SimpleColorPicker Grid.Row="11" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" Palette="{x:Bind CustomPalette}" CellsPerColumn="3" PaletteOrientation="Vertical" FlyoutPresenterStyle="{StaticResource PresenterStyle}"/>
+
+            <TextBlock Grid.Row="13" Text="Various styles:"/>
+            <w3c:SimpleColorPicker Grid.Row="13" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" CellStyle="{StaticResource LargeCellStyle}" FlyoutPresenterStyle="{StaticResource PresenterStyle}" CellsPerColumn="3" ZoomFactor="1.35" PaletteOrientation="Vertical" IndicatorWidth="64">
                 <w3c:SimpleColorPicker.Palette>
                     <w3c:ColorCollection>
                         <Color>#FF0000</Color>
@@ -113,11 +132,11 @@
                 </w3c:SimpleColorPicker.Palette>
             </w3c:SimpleColorPicker>
 
-            <TextBlock Grid.Row="13" Text="color property:"/>
-            <Border x:Name="border" Grid.Row="13" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
+            <TextBlock Grid.Row="15" Text="color property:"/>
+            <Border x:Name="border" Grid.Row="15" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
 
-            <TextBlock Grid.Row="15" Text="color changed event:"/>
-            <Border x:Name="borderEvent" Grid.Row="15" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
+            <TextBlock Grid.Row="17" Text="color changed event:"/>
+            <Border x:Name="borderEvent" Grid.Row="17" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
         </Grid>
     </ScrollViewer>
 </Page>
