@@ -157,7 +157,20 @@ namespace AssyntSoftware.WinUI3Controls
             DependencyProperty.Register(nameof(Palette),
                 typeof(IEnumerable<Color>),
                 typeof(SimpleColorPicker),
-                new PropertyMetadata(new ColorCollection()));
+                new PropertyMetadata(new ColorCollection(), PalettePropertyChanged));
+
+        private static void PalettePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            SimpleColorPicker picker = (SimpleColorPicker)d;
+
+            if (picker.grid is not null) // the control has been constructed
+            {
+                if (picker.IsCustomPalette)
+                    picker.CreateCustomPaletteGrid();
+                else
+                    picker.CreateDefaultPaletteGrid();
+            }
+        }
 
         public int CellsPerColumn
         {
@@ -169,35 +182,47 @@ namespace AssyntSoftware.WinUI3Controls
             DependencyProperty.Register(nameof(CellsPerColumn),
                 typeof(int),
                 typeof(SimpleColorPicker),
-                new PropertyMetadata(0));
+                new PropertyMetadata(0, CellsPerColumnPropertyChanged));
 
+        private static void CellsPerColumnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            SimpleColorPicker picker = (SimpleColorPicker)d;
+
+            if (picker.grid is not null) // the control has been constructed
+            {
+                if (picker.IsCustomPalette)
+                    picker.CreateCustomPaletteGrid();
+                else
+                    picker.CreateDefaultPaletteGrid();
+            }
+        }
 
         private void CreateCustomPaletteGrid()
         {
             Debug.Assert(grid is not null);
 
-            if (grid.Children.Count == 0)
+            if (grid.Children.Count > 0)
+                grid.Children.Clear();
+
+            int index = 0;
+            int total = Palette.Count();
+
+            grid.MaximumRowsOrColumns = GetColumnCount(total);
+
+            for (int colorSample = 0; colorSample < CellsPerColumn; colorSample++)
             {
-                int index = 0;
-                int total = Palette.Count();
-
-                grid.MaximumRowsOrColumns = GetColumnCount(total);
-
-                for (int colorSample = 0; colorSample < CellsPerColumn; colorSample++)
+                for (int numColors = 0; numColors < grid.MaximumRowsOrColumns; numColors++)
                 {
-                    for (int numColors = 0; numColors < grid.MaximumRowsOrColumns; numColors++)
+                    Border border = CreateBorder();
+
+                    int gridIndex = (CellsPerColumn * numColors) + colorSample;
+
+                    if (gridIndex < total)
                     {
-                        Border border = CreateBorder();
+                        border.Background = new SolidColorBrush(Palette.ElementAt(gridIndex));
+                        border.Tag = index++;
 
-                        int gridIndex = (CellsPerColumn * numColors) + colorSample;
-
-                        if (gridIndex < total)
-                        {
-                            border.Background = new SolidColorBrush(Palette.ElementAt(gridIndex));
-                            border.Tag = index++;
-
-                            grid.Children.Add(border);
-                        }
+                        grid.Children.Add(border);
                     }
                 }
             }
@@ -207,40 +232,40 @@ namespace AssyntSoftware.WinUI3Controls
         {
             Debug.Assert(grid is not null);
 
-            if (grid.Children.Count == 0)
+            if (grid.Children.Count > 0)
+                grid.Children.Clear();
+            
+            int index = 0;
+
+            if (IsMiniPalette)
             {
-                int index = 0;
+                grid.MaximumRowsOrColumns = sMiniPaletteColumnOffsets.Length; // columns
 
-                if (IsMiniPalette)
+                for (int colorSample = 0; colorSample < cDefaultSamplesPerColor; colorSample++)
                 {
-                    grid.MaximumRowsOrColumns = sMiniPaletteColumnOffsets.Length; // columns
-
-                    for (int colorSample = 0; colorSample < cDefaultSamplesPerColor; colorSample++)
+                    for (int numColors = 0; numColors < grid.MaximumRowsOrColumns; numColors++)
                     {
-                        for (int numColors = 0; numColors < grid.MaximumRowsOrColumns; numColors++)
-                        {
-                            Border border = CreateBorder();
-                            border.Background = new SolidColorBrush(ConvertToColor(sRGB[sMiniPaletteColumnOffsets[numColors] + colorSample]));
-                            border.Tag = index++;
+                        Border border = CreateBorder();
+                        border.Background = new SolidColorBrush(ConvertToColor(sRGB[sMiniPaletteColumnOffsets[numColors] + colorSample]));
+                        border.Tag = index++;
 
-                            grid.Children.Add(border);
-                        }
+                        grid.Children.Add(border);
                     }
                 }
-                else
+            }
+            else
+            {
+                grid.MaximumRowsOrColumns = sRGB.Length / cDefaultSamplesPerColor; // columns
+
+                for (int colorSample = 0; colorSample < cDefaultSamplesPerColor; colorSample++)
                 {
-                    grid.MaximumRowsOrColumns = sRGB.Length / cDefaultSamplesPerColor; // columns
-
-                    for (int colorSample = 0; colorSample < cDefaultSamplesPerColor; colorSample++)
+                    for (int numColors = 0; numColors < grid.MaximumRowsOrColumns; numColors++)
                     {
-                        for (int numColors = 0; numColors < grid.MaximumRowsOrColumns; numColors++)
-                        {
-                            Border border = CreateBorder();
-                            border.Background = new SolidColorBrush(ConvertToColor(sRGB[(cDefaultSamplesPerColor * numColors) + colorSample]));
-                            border.Tag = index++;
+                        Border border = CreateBorder();
+                        border.Background = new SolidColorBrush(ConvertToColor(sRGB[(cDefaultSamplesPerColor * numColors) + colorSample]));
+                        border.Tag = index++;
 
-                            grid.Children.Add(border);
-                        }
+                        grid.Children.Add(border);
                     }
                 }
             }
