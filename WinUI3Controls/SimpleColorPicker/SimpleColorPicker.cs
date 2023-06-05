@@ -425,7 +425,7 @@ namespace AssyntSoftware.WinUI3Controls
                     {
                         newIndex = Clamp2DVerticalIndex(index - columnCount, columnCount, matrixTotal);
 
-                        if (newIndex >= gridTotal)
+                        while (newIndex >= gridTotal)
                         {
                             newIndex = Clamp2DVerticalIndex(newIndex - columnCount, columnCount, matrixTotal);
                         }
@@ -434,7 +434,7 @@ namespace AssyntSoftware.WinUI3Controls
                     {
                         newIndex = Clamp2DVerticalIndex(index + columnCount, columnCount, matrixTotal);
 
-                        if (newIndex >= gridTotal)
+                        while (newIndex >= gridTotal)
                         {
                             newIndex = Clamp2DVerticalIndex(newIndex + columnCount, columnCount, matrixTotal);
                         }
