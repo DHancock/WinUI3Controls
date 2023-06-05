@@ -82,10 +82,11 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.ColumnSpan="3" HorizontalAlignment="Right" Content="Toggle Theme" Click="Button_Click"/>
+            <Button Grid.Column="4" HorizontalAlignment="Right" Content="Toggle Theme" Click="Button_Click"/>
 
             <TextBlock Grid.Row="1" Text="Defaults:"/>
             <w3c:SimpleColorPicker Grid.Row="1" Grid.Column="1"  Color="{x:Bind BC, Mode=TwoWay}" ColorChanged="SimpleColorPicker_ColorChanged"/>
@@ -117,7 +118,8 @@
             </w3c:SimpleColorPicker>
 
             <TextBlock Grid.Row="11" Text="Custom data bound palette:"/>
-            <w3c:SimpleColorPicker Grid.Row="11" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" Palette="{x:Bind CustomPalette}" CellsPerColumn="3" PaletteOrientation="Vertical" FlyoutPresenterStyle="{StaticResource PresenterStyle}"/>
+            <w3c:SimpleColorPicker Grid.Row="11" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" Palette="{x:Bind CustomPalette, Mode=OneWay}" CellsPerColumn="3" FlyoutPresenterStyle="{StaticResource PresenterStyle}"/>
+            <Button Grid.Row="11" Grid.Column="2" Content="Toggle Palette" Click="TogglePalette_Click"/>
 
             <TextBlock Grid.Row="13" Text="Various styles:"/>
             <w3c:SimpleColorPicker Grid.Row="13" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" CellStyle="{StaticResource LargeCellStyle}" FlyoutPresenterStyle="{StaticResource PresenterStyle}" CellsPerColumn="3" ZoomFactor="1.35" PaletteOrientation="Vertical" IndicatorWidth="64">

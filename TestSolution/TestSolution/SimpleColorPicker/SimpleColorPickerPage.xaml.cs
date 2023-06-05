@@ -31,7 +31,7 @@ namespace TestSolution.SimpleColorPicker
     {
         private Color bc;
 
-        private readonly List<Color> palette = new List<Color>()
+        private readonly List<Color> paletteA = new List<Color>()
         {
             Color.FromArgb(0xFF, 0x7C, 0x2D, 0x12),
             Color.FromArgb(0xFF, 0x9A, 0x34, 0x12),
@@ -44,9 +44,13 @@ namespace TestSolution.SimpleColorPicker
             Color.FromArgb(0xFF, 0xFF, 0xED, 0xD5),
         };
 
+        private IEnumerable<Color> palette;
+
         public SimpleColorPickerPage()
         {
             this.InitializeComponent();
+
+            palette = paletteA;
 
             // note: the picker doesn't validate this color against it's palette 
             BC = Colors.DarkKhaki;
@@ -78,7 +82,48 @@ namespace TestSolution.SimpleColorPicker
             }
         }
 
-        public IEnumerable<Color> CustomPalette => palette;
+        public IEnumerable<Color> CustomPalette
+        {
+            get => palette;
+            set
+            {
+                if (palette != value)
+                {
+                    palette = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CustomPalette)));
+                }
+            }
+        }
+
+
+        private static List<Color> BuildRandomPalette()
+        {
+            List<Color> palette = new List<Color>(12);
+            byte[] rgb = new byte[3];
+            Random rand = new Random();
+
+            for (int index = 0; index < palette.Capacity; ++index)
+            {
+                rand.NextBytes(rgb);
+                palette.Add(Color.FromArgb(0xFF, rgb[0], rgb[1], rgb[2]));
+            }
+
+            return palette;
+        }
+
+        private int paletteTypeIndex = 0;
+
+        private void TogglePalette_Click(object sender, RoutedEventArgs e)
+        {
+            switch (paletteTypeIndex++)
+            {
+                case 0: CustomPalette = BuildRandomPalette(); break;
+                case 1: CustomPalette = new List<Color>(); break;  // revert to the built in default palette
+                case 2: CustomPalette = paletteA; break;
+            }
+
+            paletteTypeIndex %= 3;
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
