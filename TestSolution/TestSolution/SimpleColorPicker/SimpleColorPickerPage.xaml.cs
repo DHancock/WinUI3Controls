@@ -33,15 +33,15 @@ namespace TestSolution.SimpleColorPicker
 
         private readonly List<Color> paletteA = new List<Color>()
         {
-            Color.FromArgb(0xFF, 0x7C, 0x2D, 0x12),
-            Color.FromArgb(0xFF, 0x9A, 0x34, 0x12),
-            Color.FromArgb(0xFF, 0xC2, 0x41, 0x0C),
-            Color.FromArgb(0xFF, 0xEA, 0x58, 0x0C),
-            Color.FromArgb(0xFF, 0xF9, 0x73, 0x16),
-            Color.FromArgb(0xFF, 0xFB, 0x92, 0x3C),
-            Color.FromArgb(0xFF, 0xFD, 0xBA, 0x74),
-            Color.FromArgb(0xFF, 0xFE, 0xD7, 0xAA),
-            Color.FromArgb(0xFF, 0xFF, 0xED, 0xD5),
+            new Color{ A = 0xFF, R = 0x7C, G = 0x2D, B = 0x12 },
+            new Color{ A = 0xFF, R = 0x9A, G = 0x34, B = 0x12 },
+            new Color{ A = 0xFF, R = 0xC2, G = 0x41, B = 0x0C },
+            new Color{ A = 0xFF, R = 0xEA, G = 0x58, B = 0x0C },
+            new Color{ A = 0xFF, R = 0xF9, G = 0x73, B = 0x16 },
+            new Color{ A = 0xFF, R = 0xFB, G = 0x92, B = 0x3C },
+            new Color{ A = 0xFF, R = 0xFD, G = 0xBA, B = 0x74 },
+            new Color{ A = 0xFF, R = 0xFE, G = 0xD7, B = 0xAA },
+            new Color{ A = 0xFF, R = 0xFF, G = 0xED, B = 0xD5 },
         };
 
         private IEnumerable<Color> palette;
@@ -105,7 +105,7 @@ namespace TestSolution.SimpleColorPicker
             for (int index = 0; index < palette.Capacity; ++index)
             {
                 rand.NextBytes(rgb);
-                palette.Add(Color.FromArgb(0xFF, rgb[0], rgb[1], rgb[2]));
+                palette.Add(new Color { A = 0xFF, R = rgb[0], G = rgb[1], B = rgb[2] });
             }
 
             return palette;
@@ -130,6 +130,16 @@ namespace TestSolution.SimpleColorPicker
         private void SimpleColorPicker_ColorChanged(AssyntSoftware.WinUI3Controls.SimpleColorPicker sender, Color args)
         {
             borderEvent.Background = new SolidColorBrush(args);
+        }
+
+        private void SimpleColorPicker_FlyoutOpened(AssyntSoftware.WinUI3Controls.SimpleColorPicker sender, bool args)
+        {
+            eventReceivedFeedback.Text = "event received: Opened";
+        }
+
+        private void SimpleColorPicker_FlyoutClosed(AssyntSoftware.WinUI3Controls.SimpleColorPicker sender, bool args)
+        {
+            eventReceivedFeedback.Text = "event received: Closed"; 
         }
     }
 }

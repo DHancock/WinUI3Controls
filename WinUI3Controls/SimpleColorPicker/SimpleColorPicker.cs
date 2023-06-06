@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 
@@ -20,6 +21,8 @@ namespace AssyntSoftware.WinUI3Controls
         private const int cDefaultSamplesPerColor = 10;  // the number of shades of a color in the default palettes
         
         public event TypedEventHandler<SimpleColorPicker, Color>? ColorChanged;
+        public event TypedEventHandler<SimpleColorPicker, bool>? FlyoutOpened;
+        public event TypedEventHandler<SimpleColorPicker, bool>? FlyoutClosed;
 
         private DateTime lastKeyRepeat = DateTime.UtcNow;
         private SplitButton? pickButton;
@@ -56,6 +59,20 @@ namespace AssyntSoftware.WinUI3Controls
 
                 if (flyout is not null)
                 {
+                    flyout.Opened += (s, e) =>
+                    {
+                        IsFlyoutOpen = true;
+                        FlyoutOpened?.Invoke(this, true);
+                    };
+
+                    flyout.Closed += (s, e) =>
+                    {
+                        IsFlyoutOpen = false;
+                        FlyoutClosed?.Invoke(this, false);
+                    };
+
+                    SetFlyoutOpenState(this, IsFlyoutOpen);
+
                     if (FlyoutPresenterStyle is not null)
                         flyout.FlyoutPresenterStyle = FlyoutPresenterStyle;
 
@@ -110,6 +127,39 @@ namespace AssyntSoftware.WinUI3Controls
                 typeof(double),
                 typeof(SimpleColorPicker),
                 new PropertyMetadata(32));
+
+        public bool IsFlyoutOpen
+        {
+            get { return (bool)GetValue(IsFlyoutOpenProperty); }
+            set { SetValue(IsFlyoutOpenProperty, value); } // not much point to this but WinUI doesn't have read only properties
+        }
+
+        public static readonly DependencyProperty IsFlyoutOpenProperty =
+            DependencyProperty.Register(nameof(IsFlyoutOpen),
+                typeof(bool),
+                typeof(SimpleColorPicker),
+                new PropertyMetadata(false, IsFlyoutOpenPropertyChanged));
+
+        private static void IsFlyoutOpenPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            SetFlyoutOpenState((SimpleColorPicker)d, (bool)e.NewValue); 
+        }
+
+        private static void SetFlyoutOpenState(SimpleColorPicker picker, bool isOpen)
+        {
+            if ((picker.pickButton is not null) && (picker.pickButton.Flyout is not null))
+            {
+                FlyoutBase flyout = picker.pickButton.Flyout;
+
+                if (isOpen != flyout.IsOpen)
+                {
+                    if (isOpen)
+                        flyout.ShowAt(picker.pickButton, new FlyoutShowOptions { Placement = FlyoutPlacementMode.BottomEdgeAlignedLeft });
+                    else
+                        flyout.Hide();
+                }
+            }
+        }
 
         public double ZoomFactor
         {
@@ -492,7 +542,7 @@ namespace AssyntSoftware.WinUI3Controls
             if (!sender.Flyout.IsOpen) // it's being opened via the keyboard
             {
                 SetTabStopStateWithinFlyout(enable: true);
-                sender.Flyout.ShowAt(sender);
+                IsFlyoutOpen = true;
             }
         }
 

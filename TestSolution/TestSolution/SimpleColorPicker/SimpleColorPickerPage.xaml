@@ -54,30 +54,34 @@
                 <RowDefinition Height="Auto"/>
 
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="25"/>
 
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="25"/>
 
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="25"/>
 
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="25"/>
 
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="25"/>
 
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="25"/>
 
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="25"/>
 
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="25"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="25"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -92,7 +96,7 @@
             <w3c:SimpleColorPicker Grid.Row="1" Grid.Column="1"  Color="{x:Bind BC, Mode=TwoWay}" ColorChanged="SimpleColorPicker_ColorChanged"/>
 
             <TextBlock Grid.Row="3" Text="Mini palette:"/>
-            <w3c:SimpleColorPicker Grid.Row="3" Grid.Column="1" IsMiniPalette="True"  Color="{x:Bind BC, Mode=TwoWay}"/>
+            <w3c:SimpleColorPicker Grid.Row="3" Grid.Column="1" IsMiniPalette="True" Color="{x:Bind BC, Mode=TwoWay}"/>
 
             <TextBlock Grid.Row="5" Text="Vertical palette orientation:"/>
             <w3c:SimpleColorPicker Grid.Row="5" Grid.Column="1" PaletteOrientation="Vertical"  Color="{x:Bind BC, Mode=TwoWay}"/>
@@ -134,11 +138,19 @@
                 </w3c:SimpleColorPicker.Palette>
             </w3c:SimpleColorPicker>
 
-            <TextBlock Grid.Row="15" Text="color property:"/>
-            <Border x:Name="border" Grid.Row="15" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
+            <TextBlock Grid.Row="15" Text="Flyout opened/closed events:"/>
+            <w3c:SimpleColorPicker Grid.Row="15" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" IsMiniPalette="True" FlyoutOpened="SimpleColorPicker_FlyoutOpened" FlyoutClosed="SimpleColorPicker_FlyoutClosed"/>
+            <TextBlock x:Name="eventReceivedFeedback" Text="event received:" Grid.Row="15" Grid.Column="2" HorizontalAlignment="Left" Grid.ColumnSpan="2"/>
 
-            <TextBlock Grid.Row="17" Text="color changed event:"/>
-            <Border x:Name="borderEvent" Grid.Row="17" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
+            <TextBlock Grid.Row="17" Text="IsFlyoutOpen property:"/>
+            <w3c:SimpleColorPicker x:Name="openPicker" Grid.Row="17" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" IsMiniPalette="True"/>
+            <CheckBox Content="Flyout open" IsChecked="{x:Bind openPicker.IsFlyoutOpen, Mode=TwoWay}" Grid.Row="17" Grid.Column="2"/>
+
+            <TextBlock Grid.Row="19" Text="color property:"/>
+            <Border x:Name="border" Grid.Row="19" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
+
+            <TextBlock Grid.Row="21" Text="color changed event:"/>
+            <Border x:Name="borderEvent" Grid.Row="21" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
         </Grid>
     </ScrollViewer>
 </Page>
