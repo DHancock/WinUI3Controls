@@ -61,6 +61,7 @@
     <Style TargetType="local:SimpleColorPicker">
         <Setter Property="IndicatorWidth" Value="32"/>
         <Setter Property="Height" Value="32"/>
+        <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:SimpleColorPicker">
