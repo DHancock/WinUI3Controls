@@ -76,8 +76,8 @@
                                             <Setter Property="Padding" Value="6"/>
                                         </Style>
                                     </Flyout.FlyoutPresenterStyle>
-                                    <VariableSizedWrapGrid>
-                                        <VariableSizedWrapGrid.Resources>
+                                    <Grid>
+                                        <Grid.Resources>
                                             <Style TargetType="Border">
                                                 <Setter Property="Width" Value="20"/>
                                                 <Setter Property="Height" Value="20"/>
@@ -85,8 +85,8 @@
                                                 <Setter Property="BorderThickness" Value="0"/>
                                                 <Setter Property="CornerRadius" Value="3"/>
                                             </Style>
-                                        </VariableSizedWrapGrid.Resources>
-                                    </VariableSizedWrapGrid>
+                                        </Grid.Resources>
+                                    </Grid>
                                 </Flyout>
                             </SplitButton.Flyout>
                         </SplitButton>
