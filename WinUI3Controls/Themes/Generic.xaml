@@ -10,11 +10,12 @@
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <SolidColorBrush x:Key="GroupBoxBorderBrush">LightGray</SolidColorBrush>
-            <SolidColorBrush x:Key="SimpleColorPickerFlyoutBackground" Color="GhostWhite"/>
+            <SolidColorBrush x:Key="SimpleColorPickerFlyoutBackground">GhostWhite</SolidColorBrush>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
             <SolidColorBrush x:Key="GroupBoxBorderBrush">#FF484848</SolidColorBrush>
-            <SolidColorBrush x:Key="SimpleColorPickerFlyoutBackground" Color="#FF484848"/>
+            <SolidColorBrush x:Key="SimpleColorPickerFlyoutBackground">#FF484848</SolidColorBrush>
+            
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
