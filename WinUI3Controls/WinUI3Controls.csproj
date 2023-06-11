@@ -9,10 +9,10 @@
     <SignAssembly>false</SignAssembly>
     <AssemblyName>AssyntSoftware.WinUI3Controls</AssemblyName>
     <Company>David Hancock</Company>
-    <Copyright>2021 David Hancock</Copyright>
+    <Copyright></Copyright>
     <RepositoryType>git</RepositoryType>
     <PackageTags>WinUI Controls XAML GroupBox WindowsAppSDK</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <AnalysisLevel>latest</AnalysisLevel>
     <Description>Provides a WinUI implementation of a WPF GroupBox control. 
 Built for use with the Windows App SDK.</Description>
