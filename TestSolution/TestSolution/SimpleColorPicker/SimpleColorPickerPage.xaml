@@ -11,7 +11,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <ScrollViewer>
-        <Grid Padding="15,15,30,15">
+        <Grid Padding="15,15,30,15" RowSpacing="25">
             <Grid.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.ThemeDictionaries>
@@ -52,36 +52,17 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25"/>
-
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25"/>
-
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25"/>
-
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25"/>
-
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25"/>
-
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25"/>
-
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25"/>
-
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -95,17 +76,17 @@
             <TextBlock Grid.Row="1" Text="Defaults:"/>
             <w3c:SimpleColorPicker Grid.Row="1" Grid.Column="1"  Color="{x:Bind BC, Mode=TwoWay}" ColorChanged="SimpleColorPicker_ColorChanged"/>
 
-            <TextBlock Grid.Row="3" Text="Mini palette:"/>
-            <w3c:SimpleColorPicker Grid.Row="3" Grid.Column="1" IsMiniPalette="True" Color="{x:Bind BC, Mode=TwoWay}"/>
+            <TextBlock Grid.Row="2" Text="Mini palette:"/>
+            <w3c:SimpleColorPicker Grid.Row="2" Grid.Column="1" IsMiniPalette="True" Color="{x:Bind BC, Mode=TwoWay}"/>
 
-            <TextBlock Grid.Row="5" Text="Vertical palette orientation:"/>
-            <w3c:SimpleColorPicker Grid.Row="5" Grid.Column="1" PaletteOrientation="Vertical"  Color="{x:Bind BC, Mode=TwoWay}"/>
+            <TextBlock Grid.Row="3" Text="Vertical palette orientation:"/>
+            <w3c:SimpleColorPicker Grid.Row="3" Grid.Column="1" PaletteOrientation="Vertical"  Color="{x:Bind BC, Mode=TwoWay}"/>
 
-            <TextBlock Grid.Row="7" Text="Vertical mini palette:"/>
-            <w3c:SimpleColorPicker Grid.Row="7" Grid.Column="1" IsMiniPalette="True" PaletteOrientation="Vertical" Color="{x:Bind BC, Mode=TwoWay}"/>
+            <TextBlock Grid.Row="4" Text="Vertical mini palette:"/>
+            <w3c:SimpleColorPicker Grid.Row="4" Grid.Column="1" IsMiniPalette="True" PaletteOrientation="Vertical" Color="{x:Bind BC, Mode=TwoWay}"/>
 
-            <TextBlock Grid.Row="9" Text="Custom Xaml palette:"/>
-            <w3c:SimpleColorPicker Grid.Row="9" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" CellsPerColumn="3" ZoomFactor="1.35" PaletteOrientation="Vertical" FlyoutPresenterStyle="{StaticResource PresenterStyle}">
+            <TextBlock Grid.Row="5" Text="Custom Xaml palette:"/>
+            <w3c:SimpleColorPicker Grid.Row="5" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" CellsPerColumn="3" ZoomFactor="1.35" PaletteOrientation="Vertical" FlyoutPresenterStyle="{StaticResource PresenterStyle}">
                 <w3c:SimpleColorPicker.Palette>
                     <w3c:ColorCollection>
                         <Color>#7C2D12</Color>
@@ -121,12 +102,12 @@
                 </w3c:SimpleColorPicker.Palette>
             </w3c:SimpleColorPicker>
 
-            <TextBlock Grid.Row="11" Text="Custom data bound palette:"/>
-            <w3c:SimpleColorPicker Grid.Row="11" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" Palette="{x:Bind CustomPalette, Mode=OneWay}" CellsPerColumn="3" FlyoutPresenterStyle="{StaticResource PresenterStyle}"/>
-            <Button Grid.Row="11" Grid.Column="2" Content="Toggle Palette" Click="TogglePalette_Click"/>
+            <TextBlock Grid.Row="6" Text="Custom data bound palette:"/>
+            <w3c:SimpleColorPicker Grid.Row="6" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" Palette="{x:Bind CustomPalette, Mode=OneWay}" CellsPerColumn="3" FlyoutPresenterStyle="{StaticResource PresenterStyle}"/>
+            <Button Grid.Row="6" Grid.Column="2" Content="Toggle Palette" Click="TogglePalette_Click"/>
 
-            <TextBlock Grid.Row="13" Text="Various styles:"/>
-            <w3c:SimpleColorPicker Grid.Row="13" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" CellStyle="{StaticResource LargeCellStyle}" FlyoutPresenterStyle="{StaticResource PresenterStyle}" CellsPerColumn="3" ZoomFactor="1.35" PaletteOrientation="Vertical" IndicatorWidth="64">
+            <TextBlock Grid.Row="7" Text="Various styles:"/>
+            <w3c:SimpleColorPicker Grid.Row="7" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" CellStyle="{StaticResource LargeCellStyle}" FlyoutPresenterStyle="{StaticResource PresenterStyle}" CellsPerColumn="3" ZoomFactor="1.35" PaletteOrientation="Vertical" IndicatorWidth="64">
                 <w3c:SimpleColorPicker.Palette>
                     <w3c:ColorCollection>
                         <Color>#FF0000</Color>
@@ -138,19 +119,19 @@
                 </w3c:SimpleColorPicker.Palette>
             </w3c:SimpleColorPicker>
 
-            <TextBlock Grid.Row="15" Text="Flyout opened/closed events:"/>
-            <w3c:SimpleColorPicker Grid.Row="15" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" IsMiniPalette="True" FlyoutOpened="SimpleColorPicker_FlyoutOpened" FlyoutClosed="SimpleColorPicker_FlyoutClosed"/>
-            <TextBlock x:Name="eventReceivedFeedback" Text="event received:" Grid.Row="15" Grid.Column="2" HorizontalAlignment="Left" Grid.ColumnSpan="2"/>
+            <TextBlock Grid.Row="8" Text="Flyout opened/closed events:"/>
+            <w3c:SimpleColorPicker Grid.Row="8" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" IsMiniPalette="True" FlyoutOpened="SimpleColorPicker_FlyoutOpened" FlyoutClosed="SimpleColorPicker_FlyoutClosed"/>
+            <TextBlock x:Name="eventReceivedFeedback" Text="event received:" Grid.Row="8" Grid.Column="2" HorizontalAlignment="Left" Grid.ColumnSpan="2"/>
 
-            <TextBlock Grid.Row="17" Text="IsFlyoutOpen property:"/>
-            <w3c:SimpleColorPicker x:Name="openPicker" Grid.Row="17" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" IsMiniPalette="True"/>
-            <CheckBox Content="Flyout open" IsChecked="{x:Bind openPicker.IsFlyoutOpen, Mode=TwoWay}" Grid.Row="17" Grid.Column="2"/>
+            <TextBlock Grid.Row="9" Text="IsFlyoutOpen property:"/>
+            <w3c:SimpleColorPicker x:Name="openPicker" Grid.Row="9" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" IsMiniPalette="True"/>
+            <CheckBox Content="Flyout open" IsChecked="{x:Bind openPicker.IsFlyoutOpen, Mode=TwoWay}" Grid.Row="9" Grid.Column="2"/>
 
-            <TextBlock Grid.Row="19" Text="color property:"/>
-            <Border x:Name="border" Grid.Row="19" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
+            <TextBlock Grid.Row="10" Text="color property:"/>
+            <Border x:Name="border" Grid.Row="10" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
 
-            <TextBlock Grid.Row="21" Text="color changed event:"/>
-            <Border x:Name="borderEvent" Grid.Row="21" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
+            <TextBlock Grid.Row="11" Text="color changed event:"/>
+            <Border x:Name="borderEvent" Grid.Row="11" Grid.Column="1" Height="80" HorizontalAlignment="Stretch" BorderBrush="{ThemeResource SystemColorButtonTextColor}" BorderThickness="1"/>
         </Grid>
     </ScrollViewer>
 </Page>
