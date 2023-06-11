@@ -2,7 +2,7 @@
 
 A control library for WinUI 3
 
-It contains a two controls, an WinUI implementation of the **WPF GroupBox** control and a simple palette based color picker.
+It contains two controls, a WinUI implementation of the **WPF GroupBox** control and a simple palette based color picker.
 The library is available as a [NuGet package](https://www.nuget.org/packages/AssyntSoftware.WinUI3Controls/).
 
 
