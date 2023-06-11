@@ -17,6 +17,7 @@
     <None Remove="GroupBox\DataTemplateSelectorPage.xaml" />
     <None Remove="GroupBox\PropertiesPage.xaml" />
     <None Remove="GroupBox\StylePage.xaml" />
+    <None Remove="SimpleColorPicker\SimpleColorPickerPage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.230313.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +42,9 @@
     <Page Update="GroupBox\StylePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+	  <Page Update="SimpleColorPicker\SimpleColorPickerPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+	  </Page>
   </ItemGroup>
 
 	<!-- Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
@@ -48,5 +52,5 @@
        package has not yet been restored -->
 	<ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnablePreviewMsixTooling)'=='true'">
 		<ProjectCapability Include="Msix" />
-	</ItemGroup>	
+	</ItemGroup>
 </Project>
