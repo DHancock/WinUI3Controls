@@ -70,7 +70,7 @@
                         <SplitButton x:Name="PART_PickButton" Height="{TemplateBinding Height}" Padding="0">
                             <Border Width="{TemplateBinding IndicatorWidth}" Height="{TemplateBinding Height}" Margin="0" CornerRadius="4,0,0,4"/>
                             <SplitButton.Flyout>
-                                <Flyout Placement="{TemplateBinding FlyoutPlacement}" ShouldConstrainToRootBounds="{TemplateBinding FlyoutShouldConstrainToRootBounds}">
+                                <Flyout Placement="Auto" ShouldConstrainToRootBounds="{TemplateBinding ShouldConstrainToRootBounds}">
                                     <Flyout.FlyoutPresenterStyle>
                                         <Style TargetType="FlyoutPresenter">
                                             <Setter Property="Background" Value="{ThemeResource SimpleColorPickerFlyoutBackground}"/>
