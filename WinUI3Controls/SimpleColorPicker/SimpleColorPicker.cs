@@ -82,7 +82,7 @@ namespace AssyntSoftware.WinUI3Controls
                     };
 
                     // changing the constraint value after the flyout has been shown isn't supported
-                    flyout.ShouldConstrainToRootBounds = FlyoutShouldConstrainToRootBounds;
+                    flyout.ShouldConstrainToRootBounds = ShouldConstrainToRootBounds;
 
                     if (FlyoutPresenterStyle is not null)
                         flyout.FlyoutPresenterStyle = FlyoutPresenterStyle;
@@ -164,7 +164,7 @@ namespace AssyntSoftware.WinUI3Controls
                 {
                     if (!flyout.IsOpen)
                     {
-                        flyout.Placement = picker.FlyoutPlacement;
+                        flyout.Placement = picker.Placement;
                         flyout.ShowAt(picker.pickButton);
                     }
                 }
@@ -250,26 +250,26 @@ namespace AssyntSoftware.WinUI3Controls
             picker.grid?.Children.Clear();
         }
 
-        public FlyoutPlacementMode FlyoutPlacement
+        public FlyoutPlacementMode Placement
         {
-            get { return (FlyoutPlacementMode)GetValue(FlyoutPlacementProperty); }
-            set { SetValue(FlyoutPlacementProperty, value); }
+            get { return (FlyoutPlacementMode)GetValue(PlacementProperty); }
+            set { SetValue(PlacementProperty, value); }
         }
 
-        public static readonly DependencyProperty FlyoutPlacementProperty =
-            DependencyProperty.Register(nameof(FlyoutPlacement),
+        public static readonly DependencyProperty PlacementProperty =
+            DependencyProperty.Register(nameof(Placement),
                 typeof(FlyoutPlacementMode),
                 typeof(SimpleColorPicker),
                 new PropertyMetadata(FlyoutPlacementMode.BottomEdgeAlignedLeft));
 
-        public bool FlyoutShouldConstrainToRootBounds
+        public bool ShouldConstrainToRootBounds
         {
-            get { return (bool)GetValue(FlyoutShouldConstrainToRootBoundsProperty); }
-            set { SetValue(FlyoutShouldConstrainToRootBoundsProperty, value); }
+            get { return (bool)GetValue(ShouldConstrainToRootBoundsProperty); }
+            set { SetValue(ShouldConstrainToRootBoundsProperty, value); }
         }
 
-        public static readonly DependencyProperty FlyoutShouldConstrainToRootBoundsProperty =
-            DependencyProperty.Register(nameof(FlyoutShouldConstrainToRootBounds),
+        public static readonly DependencyProperty ShouldConstrainToRootBoundsProperty =
+            DependencyProperty.Register(nameof(ShouldConstrainToRootBounds),
                 typeof(bool),
                 typeof(SimpleColorPicker),
                 new PropertyMetadata(true));
