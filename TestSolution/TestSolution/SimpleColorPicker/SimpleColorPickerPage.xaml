@@ -43,7 +43,7 @@
                     </Style>
 
                     <Style TargetType="w3c:SimpleColorPicker">
-                        <Setter Property="FlyoutShouldConstrainToRootBounds" Value="false"/>
+                        <Setter Property="ShouldConstrainToRootBounds" Value="false"/>
                     </Style>
                     
                     <Style TargetType="TextBlock">
