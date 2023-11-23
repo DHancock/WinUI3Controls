@@ -164,7 +164,6 @@ namespace AssyntSoftware.WinUI3Controls
                 {
                     if (!flyout.IsOpen)
                     {
-                        flyout.Placement = picker.Placement;
                         flyout.ShowAt(picker.pickButton);
                     }
                 }
@@ -249,18 +248,6 @@ namespace AssyntSoftware.WinUI3Controls
             SimpleColorPicker picker = (SimpleColorPicker)d;
             picker.grid?.Children.Clear();
         }
-
-        public FlyoutPlacementMode Placement
-        {
-            get { return (FlyoutPlacementMode)GetValue(PlacementProperty); }
-            set { SetValue(PlacementProperty, value); }
-        }
-
-        public static readonly DependencyProperty PlacementProperty =
-            DependencyProperty.Register(nameof(Placement),
-                typeof(FlyoutPlacementMode),
-                typeof(SimpleColorPicker),
-                new PropertyMetadata(FlyoutPlacementMode.BottomEdgeAlignedLeft));
 
         public bool ShouldConstrainToRootBounds
         {
