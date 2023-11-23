@@ -42,6 +42,10 @@
                         <Setter Property="Padding" Value="6"/>
                     </Style>
 
+                    <Style TargetType="w3c:SimpleColorPicker">
+                        <Setter Property="FlyoutShouldConstrainToRootBounds" Value="false"/>
+                    </Style>
+                    
                     <Style TargetType="TextBlock">
                         <Setter Property="Margin" Value="0,0,10,0"/>
                         <Setter Property="HorizontalAlignment" Value="Right"/>
