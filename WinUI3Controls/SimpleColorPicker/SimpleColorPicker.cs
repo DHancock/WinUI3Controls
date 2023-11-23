@@ -28,7 +28,6 @@ namespace AssyntSoftware.WinUI3Controls
         private SplitButton? pickButton;
         private Border? indicatorBorder;
         private Grid? grid;
-
         private Style? cellStyle;
         private Style? flyoutPresenterStyle;
 
@@ -36,7 +35,7 @@ namespace AssyntSoftware.WinUI3Controls
         {
             this.DefaultStyleKey = typeof(SimpleColorPicker);
         }
-
+            
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -55,10 +54,21 @@ namespace AssyntSoftware.WinUI3Controls
                     indicatorBorder.Background = new SolidColorBrush(Color);
                 }
 
-                Flyout? flyout = (Flyout)pickButton.Flyout;
-
-                if (flyout is not null)
+                if ((pickButton.Flyout is Flyout flyout) && (flyout.Content is Grid root))
                 {
+                    grid = root;
+
+                    flyout.Opening += (s, e) =>
+                    {
+                        if (grid.Children.Count == 0)
+                        {
+                            if (IsCustomPalette)
+                                CreateCustomPaletteGrid();
+                            else
+                                CreateDefaultPaletteGrid();
+                        }
+                    };
+
                     flyout.Opened += (s, e) =>
                     {
                         IsFlyoutOpen = true;
@@ -71,22 +81,23 @@ namespace AssyntSoftware.WinUI3Controls
                         FlyoutClosed?.Invoke(this, false);
                     };
 
-                    SetFlyoutOpenState(this, IsFlyoutOpen);
+                    // changing the constraint value after the flyout has been shown isn't supported
+                    flyout.ShouldConstrainToRootBounds = FlyoutShouldConstrainToRootBounds;
 
                     if (FlyoutPresenterStyle is not null)
                         flyout.FlyoutPresenterStyle = FlyoutPresenterStyle;
 
-                    grid = flyout.Content as Grid;
-
-                    if (grid is not null)
-                    {
-                        if (IsCustomPalette)
-                            CreateCustomPaletteGrid();
-                        else
-                            CreateDefaultPaletteGrid();
-                    }
+                    if (IsFlyoutOpen)
+                        Loaded += SimpleColorPicker_Loaded;
                 }
             }
+        }
+
+        private static void SimpleColorPicker_Loaded(object sender, RoutedEventArgs e)
+        {
+            SimpleColorPicker picker = (SimpleColorPicker)sender;
+            SetFlyoutOpenState(picker, picker.IsFlyoutOpen);
+            picker.Loaded -= SimpleColorPicker_Loaded;
         }
 
         private bool IsCustomPalette => (Palette is not null) && Palette.Any() && (CellsPerColumn > 0);
@@ -129,7 +140,7 @@ namespace AssyntSoftware.WinUI3Controls
         public bool IsFlyoutOpen
         {
             get { return (bool)GetValue(IsFlyoutOpenProperty); }
-            set { SetValue(IsFlyoutOpenProperty, value); } // not much point but WinUI doesn't have read only properties
+            set { SetValue(IsFlyoutOpenProperty, value); }
         }
 
         public static readonly DependencyProperty IsFlyoutOpenProperty =
@@ -143,17 +154,25 @@ namespace AssyntSoftware.WinUI3Controls
             SetFlyoutOpenState((SimpleColorPicker)d, (bool)e.NewValue); 
         }
 
-        private static void SetFlyoutOpenState(SimpleColorPicker picker, bool isOpen)
+        private static void SetFlyoutOpenState(SimpleColorPicker picker, bool toOpen)
         {
             if ((picker.pickButton is not null) && (picker.pickButton.Flyout is not null))
             {
                 FlyoutBase flyout = picker.pickButton.Flyout;
 
-                if (isOpen != flyout.IsOpen)
+                if (toOpen)
                 {
-                    if (isOpen)
-                        flyout.ShowAt(picker.pickButton, new FlyoutShowOptions { Placement = FlyoutPlacementMode.BottomEdgeAlignedLeft });
-                    else
+                    if (!flyout.IsOpen)
+                    {
+                        flyout.Placement = picker.FlyoutPlacement;
+                        flyout.ShowAt(picker.pickButton);
+                    }
+                }
+                else 
+                {
+                    picker.ResetFlyoutState();
+
+                    if (flyout.IsOpen)
                         flyout.Hide();
                 }
             }
@@ -210,14 +229,7 @@ namespace AssyntSoftware.WinUI3Controls
         private static void PalettePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             SimpleColorPicker picker = (SimpleColorPicker)d;
-
-            if (picker.grid is not null) // the control has been constructed
-            {
-                if (picker.IsCustomPalette)
-                    picker.CreateCustomPaletteGrid();
-                else
-                    picker.CreateDefaultPaletteGrid();
-            }
+            picker.grid?.Children.Clear();
         }
 
         public int CellsPerColumn
@@ -235,15 +247,32 @@ namespace AssyntSoftware.WinUI3Controls
         private static void CellsPerColumnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             SimpleColorPicker picker = (SimpleColorPicker)d;
-
-            if (picker.grid is not null) // the control has been constructed
-            {
-                if (picker.IsCustomPalette)
-                    picker.CreateCustomPaletteGrid();
-                else
-                    picker.CreateDefaultPaletteGrid();
-            }
+            picker.grid?.Children.Clear();
         }
+
+        public FlyoutPlacementMode FlyoutPlacement
+        {
+            get { return (FlyoutPlacementMode)GetValue(FlyoutPlacementProperty); }
+            set { SetValue(FlyoutPlacementProperty, value); }
+        }
+
+        public static readonly DependencyProperty FlyoutPlacementProperty =
+            DependencyProperty.Register(nameof(FlyoutPlacement),
+                typeof(FlyoutPlacementMode),
+                typeof(SimpleColorPicker),
+                new PropertyMetadata(FlyoutPlacementMode.BottomEdgeAlignedLeft));
+
+        public bool FlyoutShouldConstrainToRootBounds
+        {
+            get { return (bool)GetValue(FlyoutShouldConstrainToRootBoundsProperty); }
+            set { SetValue(FlyoutShouldConstrainToRootBoundsProperty, value); }
+        }
+
+        public static readonly DependencyProperty FlyoutShouldConstrainToRootBoundsProperty =
+            DependencyProperty.Register(nameof(FlyoutShouldConstrainToRootBounds),
+                typeof(bool),
+                typeof(SimpleColorPicker),
+                new PropertyMetadata(true));
 
         private record Pos(int X, int Y)   // record structs are in language version 10.0
         {
@@ -262,9 +291,7 @@ namespace AssyntSoftware.WinUI3Controls
         private void CreateCustomPaletteGrid()
         {
             Debug.Assert(grid is not null);
-
-            if (grid.Children.Count > 0)
-                grid.Children.Clear();
+            Debug.Assert(grid.Children.Count == 0);
 
             int total = Palette.Count();
             int rows = Math.Min(CellsPerColumn, total);
@@ -283,10 +310,7 @@ namespace AssyntSoftware.WinUI3Controls
 
                     if (colorIndex < total)
                     {
-                        Border border = CreateBorder(x, y);
-                        border.Background = new SolidColorBrush(Palette.ElementAt(colorIndex));
-
-                        grid.Children.Add(border);
+                        grid.Children.Add(CreateBorder(x, y, Palette.ElementAt(colorIndex)));
                     }
                 }
             }
@@ -316,9 +340,7 @@ namespace AssyntSoftware.WinUI3Controls
         private void CreateDefaultPaletteGrid()
         {
             Debug.Assert(grid is not null);
-
-            if (grid.Children.Count > 0)
-                grid.Children.Clear();
+            Debug.Assert(grid.Children.Count == 0);
 
             int rows;
             int columns;
@@ -350,19 +372,17 @@ namespace AssyntSoftware.WinUI3Controls
                     else
                         colorIndex = PaletteOrientation == Orientation.Horizontal ? (x * cDefaultSamplesPerColor) + y : (y * cDefaultSamplesPerColor) + x;
 
-                    Border border = CreateBorder(x, y);
-                    border.Background = new SolidColorBrush(ConvertToColor(sRGB[colorIndex]));
-
-                    grid.Children.Add(border);
+                    grid.Children.Add(CreateBorder(x, y, ConvertToColor(sRGB[colorIndex])));
                 }
             }
         }
 
-        private Border CreateBorder(int x, int y)
+        private Border CreateBorder(int x, int y, Color color)
         {
             Border border = new Border();
 
             border.Tag = new Pos(x, y);
+            border.Background = new SolidColorBrush(color);
             border.ScaleTransition = new Vector3Transition();
             border.PointerEntered += Border_PointerEntered;
             border.PointerExited += Border_PointerExited;
@@ -383,12 +403,13 @@ namespace AssyntSoftware.WinUI3Controls
 
         private static Color ConvertToColor(uint rgb)
         {
-            Color color = default;
-            color.A = 0xFF;
-            color.R = (byte)(rgb >> 16);
-            color.G = (byte)((rgb >> 8) & 0x000000FF);
-            color.B = (byte)(rgb & 0x000000FF);
-            return color;
+            return new Color()
+            {
+                A = 0xFF,
+                R = (byte)(rgb >> 16),
+                G = (byte)((rgb >> 8) & 0x000000FF),
+                B = (byte)(rgb & 0x000000FF),
+            };
         }
 
         public Style? CellStyle
@@ -410,7 +431,7 @@ namespace AssyntSoftware.WinUI3Controls
                     flyoutPresenterStyle = value;
             }
         }
-
+                
         private void ZoomColorOut(Border border)
         {
             border.CenterPoint = new Vector3((float)(border.ActualWidth / 2.0), (float)(border.ActualHeight / 2.0), 1.0f);
@@ -435,7 +456,7 @@ namespace AssyntSoftware.WinUI3Controls
         }
 
         private static void Border_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
+        {                   
             Border border = (Border)sender;
 
             if (!border.IsTabStop)
@@ -444,7 +465,8 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void Border_PointReleased(object sender, PointerRoutedEventArgs e)
         {
-            CloseFlyout((Border)sender);
+            SetPickedColor((Border)sender);
+            IsFlyoutOpen = false;
         }
 
         private void Border_GotFocus(object sender, RoutedEventArgs e)
@@ -457,21 +479,21 @@ namespace AssyntSoftware.WinUI3Controls
             ZoomColorIn((Border)sender);
         }
 
-        private void CloseFlyout(Border border)
+        private void SetPickedColor(Border border)
         {
             Color newColor = ((SolidColorBrush)border.Background).Color;
 
             if (newColor != Color)
                 Color = newColor;
-
-            SetTabStopStateWithinFlyout(enable: false);
-            pickButton?.Flyout.Hide();
         }
 
         private void Border_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == VirtualKey.Enter)
-                CloseFlyout((Border)sender);
+            {
+                SetPickedColor((Border)sender);
+                IsFlyoutOpen = false;
+            }
         }
 
         private void Border_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -480,7 +502,7 @@ namespace AssyntSoftware.WinUI3Controls
 
             if ((e.Key == VirtualKey.Up) || (e.Key == VirtualKey.Down) || (e.Key == VirtualKey.Left) || (e.Key == VirtualKey.Right))
             {
-                if ((DateTime.UtcNow - lastKeyRepeat) > TimeSpan.FromMilliseconds(125)) // throttle focus changes
+                if ((DateTime.UtcNow - lastKeyRepeat) > TimeSpan.FromMilliseconds(100)) // throttle focus changes
                 {
                     lastKeyRepeat = DateTime.UtcNow;
 
@@ -645,21 +667,34 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void PickButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
         {
-            if (!sender.Flyout.IsOpen) // it's being opened via the keyboard
+            // It's being opened via the keyboard or a click on the indicator part of the split button.
+            // In this case enable keyboard navigation, an initial color border will be selected once IsTabStop is set.
+            // Wen clicking the down arrow, IsTabStop will be false with no initial selection and mouse only navigation.
+
+            if (!sender.Flyout.IsOpen)
             {
-                SetTabStopStateWithinFlyout(enable: true);
+                Debug.Assert(grid is not null);
+
+                foreach (UIElement child in grid.Children)
+                    child.IsTabStop = true;
+
                 IsFlyoutOpen = true;
             }
         }
 
-        private void SetTabStopStateWithinFlyout(bool enable)
+        private void ResetFlyoutState()
         {
             Debug.Assert(grid is not null);
 
             foreach (UIElement child in grid.Children)
-                child.IsTabStop = enable;
+            {
+                if (child is Border border)
+                {
+                    border.IsTabStop = false;
+                    ZoomColorIn(border);
+                }
+            }
         }
-
 
         private readonly static int[] sMiniPaletteColumnOffsets = { 0, 20, 40, 60, 80, 100, 120, 140, 150, 180 };
 
