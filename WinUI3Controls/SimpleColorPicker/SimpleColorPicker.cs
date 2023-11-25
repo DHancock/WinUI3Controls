@@ -1,3 +1,4 @@
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -13,6 +14,7 @@ using System.Numerics;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
+using Windows.UI.Core;
 
 namespace AssyntSoftware.WinUI3Controls
 {
@@ -30,6 +32,7 @@ namespace AssyntSoftware.WinUI3Controls
         private Grid? grid;
         private Style? cellStyle;
         private Style? flyoutPresenterStyle;
+        private Border? selected;
 
         public SimpleColorPicker()
         {
@@ -56,32 +59,17 @@ namespace AssyntSoftware.WinUI3Controls
 
                 if ((pickButton.Flyout is Flyout flyout) && (flyout.Content is Grid root))
                 {
+                    flyout.Opening += Flyout_Opening;
+                    flyout.Opened += Flyout_Opened; 
+                    flyout.Closed += Flyout_Closed;
+
                     grid = root;
+                    grid.IsTabStop = true;
+                    grid.PreviewKeyDown += Grid_PreviewKeyDown;
+                    grid.PreviewKeyUp += Grid_PreviewKeyUp;
+                    grid.PointerExited += Grid_PointerExited;
 
-                    flyout.Opening += (s, e) =>
-                    {
-                        if (grid.Children.Count == 0)
-                        {
-                            if (IsCustomPalette)
-                                CreateCustomPaletteGrid();
-                            else
-                                CreateDefaultPaletteGrid();
-                        }
-                    };
-
-                    flyout.Opened += (s, e) =>
-                    {
-                        IsFlyoutOpen = true;
-                        FlyoutOpened?.Invoke(this, true);
-                    };
-
-                    flyout.Closed += (s, e) =>
-                    {
-                        IsFlyoutOpen = false;
-                        FlyoutClosed?.Invoke(this, false);
-                    };
-
-                    // changing the constraint value after the flyout has been shown isn't supported
+                    // changing the constraint value after the flyout has been shown will throw an exception
                     flyout.ShouldConstrainToRootBounds = ShouldConstrainToRootBounds;
 
                     if (FlyoutPresenterStyle is not null)
@@ -90,6 +78,124 @@ namespace AssyntSoftware.WinUI3Controls
                     if (IsFlyoutOpen)
                         Loaded += SimpleColorPicker_Loaded;
                 }
+            }
+        }
+
+        private void Flyout_Opening(object? sender, object e)
+        {
+            if (grid?.Children.Count == 0)
+            {
+                if (IsCustomPalette)
+                    CreateCustomPaletteGrid();
+                else
+                    CreateDefaultPaletteGrid();
+            }
+
+            IsFlyoutOpen = true;
+        }
+
+        private void Flyout_Opened(object? sender, object e)
+        {
+            AttemptSelectCurrentColor();
+            FlyoutOpened?.Invoke(this, true);
+        }
+
+        private void Flyout_Closed(object? sender, object e)
+        {
+            if (selected is not null)
+            {
+                ResetZoom(selected);
+                selected = null;
+            }
+
+            IsFlyoutOpen = false;
+            FlyoutClosed?.Invoke(this, false);
+        }
+
+        private void PickButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
+        {
+            // The flyout is being opened via the keyboard or a click on the indicator part of the split button.
+            // When clicking the down arrow, this code isn't called.
+            IsFlyoutOpen = true;
+        }
+
+        private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (selected is not null)
+                ResetZoom(selected);
+        }
+
+        private void Grid_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if ((e.Key == VirtualKey.Tab) || (e.Key == VirtualKey.Up) || (e.Key == VirtualKey.Down) || (e.Key == VirtualKey.Left) || (e.Key == VirtualKey.Right))
+            {
+                if ((DateTime.UtcNow - lastKeyRepeat) > TimeSpan.FromMilliseconds(100)) // throttle changes
+                {
+                    lastKeyRepeat = DateTime.UtcNow;
+
+                    Border? newSelection = null;
+                    VirtualKey key = e.Key;
+
+                    if (key == VirtualKey.Tab)
+                    {
+                        bool shift = (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+
+                        if (shift)
+                        {
+                            if (selected is null)
+                                newSelection = grid?.Children[grid.Children.Count - 1] as Border;
+                            else
+                                key = VirtualKey.Left;
+                        }
+                        else
+                        {
+                            if (selected is null)
+                                newSelection = grid?.Children[0] as Border;
+                            else
+                                key = VirtualKey.Right;
+                        }
+                    }
+
+                    if ((newSelection is null) && (selected is not null))
+                    {
+                        Pos pos = (Pos)selected.Tag;
+                        Pos newPos;
+
+                        switch (key)
+                        {
+                            case VirtualKey.Up: newPos = MoveUp(pos); break;
+                            case VirtualKey.Down: newPos = MoveDown(pos); break;
+                            case VirtualKey.Left: newPos = MoveLeft(pos); break;
+                            case VirtualKey.Right: newPos = MoveRight(pos); break;
+                            default: Debug.Fail(key.ToString()); return;
+                        }
+
+                        newSelection = grid?.Children.FirstOrDefault(x => (Pos)((Border)x).Tag == newPos) as Border;
+                        Debug.Assert(newSelection is not null);
+                    }
+
+                    if (newSelection is not null)
+                    {
+                        if (selected is not null)
+                            ResetZoom(selected);
+
+                        selected = newSelection;
+                        ZoomOut(newSelection);
+                    }
+                }
+            }
+        }
+
+        private void Grid_PreviewKeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if ((e.Key == VirtualKey.Space) || (e.Key == VirtualKey.Enter))
+            {
+                IsFlyoutOpen = false;
+
+                if ((selected is not null) && (selected.Scale != Vector3.One))
+                    SetPickedColor(selected);
+
+                e.Handled = true;
             }
         }
 
@@ -104,8 +210,8 @@ namespace AssyntSoftware.WinUI3Controls
 
         public Color Color
         {
-            get { return (Color)GetValue(ColorProperty); }
-            set { SetValue(ColorProperty, value); }
+            get => (Color)GetValue(ColorProperty);
+            set => SetValue(ColorProperty, value);
         }
 
         public static readonly DependencyProperty ColorProperty =
@@ -127,20 +233,20 @@ namespace AssyntSoftware.WinUI3Controls
 
         public double IndicatorWidth
         {
-            get { return (double)GetValue(IndicatorWidthProperty); }
-            set { SetValue(IndicatorWidthProperty, value); }
+            get => (double)GetValue(IndicatorWidthProperty);
+            set => SetValue(IndicatorWidthProperty, value);
         }
 
         public static readonly DependencyProperty IndicatorWidthProperty =
             DependencyProperty.Register(nameof(IndicatorWidth),
                 typeof(double),
                 typeof(SimpleColorPicker),
-                new PropertyMetadata(32));
+                new PropertyMetadata(35.0));
 
         public bool IsFlyoutOpen
         {
-            get { return (bool)GetValue(IsFlyoutOpenProperty); }
-            set { SetValue(IsFlyoutOpenProperty, value); }
+            get => (bool)GetValue(IsFlyoutOpenProperty);
+            set => SetValue(IsFlyoutOpenProperty, value);
         }
 
         public static readonly DependencyProperty IsFlyoutOpenProperty =
@@ -156,31 +262,31 @@ namespace AssyntSoftware.WinUI3Controls
 
         private static void SetFlyoutOpenState(SimpleColorPicker picker, bool toOpen)
         {
-            if ((picker.pickButton is not null) && (picker.pickButton.Flyout is not null))
+            if (picker.IsLoaded && (picker.pickButton is not null) && (picker.pickButton.Flyout is not null))
             {
                 FlyoutBase flyout = picker.pickButton.Flyout;
 
                 if (toOpen)
                 {
+                    Debug.Assert(flyout.IsOpen == false);
+
                     if (!flyout.IsOpen)
                     {
-                        flyout.ShowAt(picker.pickButton);
+                        if (picker.FlowDirection == FlowDirection.LeftToRight)
+                            flyout.ShowAt(picker.pickButton, new FlyoutShowOptions() { Placement = FlyoutPlacementMode.BottomEdgeAlignedLeft });
+                        else
+                            flyout.ShowAt(picker.pickButton, new FlyoutShowOptions() { Placement = FlyoutPlacementMode.BottomEdgeAlignedRight });
                     }
                 }
-                else 
-                {
-                    picker.ResetFlyoutState();
-
-                    if (flyout.IsOpen)
-                        flyout.Hide();
-                }
+                else if (flyout.IsOpen)
+                    flyout.Hide();
             }
         }
 
         public double ZoomFactor
         {
-            get { return (double)GetValue(ZoomFactorProperty); }
-            set { SetValue(ZoomFactorProperty, value); }
+            get => (double)GetValue(ZoomFactorProperty);
+            set => SetValue(ZoomFactorProperty, value);
         }
 
         public static readonly DependencyProperty ZoomFactorProperty =
@@ -191,8 +297,8 @@ namespace AssyntSoftware.WinUI3Controls
 
         public Orientation PaletteOrientation
         {
-            get { return (Orientation)GetValue(PaletteOrientationProperty); }
-            set { SetValue(PaletteOrientationProperty, value); }
+            get => (Orientation)GetValue(PaletteOrientationProperty);
+            set => SetValue(PaletteOrientationProperty, value);
         }
 
         public static readonly DependencyProperty PaletteOrientationProperty =
@@ -203,8 +309,8 @@ namespace AssyntSoftware.WinUI3Controls
 
         public bool IsMiniPalette
         {
-            get { return (bool)GetValue(IsMiniPaletteProperty); }
-            set { SetValue(IsMiniPaletteProperty, value); }
+            get => (bool)GetValue(IsMiniPaletteProperty);
+            set => SetValue(IsMiniPaletteProperty, value);
         }
 
         public static readonly DependencyProperty IsMiniPaletteProperty =
@@ -215,8 +321,8 @@ namespace AssyntSoftware.WinUI3Controls
 
         public IEnumerable<Color> Palette
         {
-            get { return (IEnumerable<Color>)GetValue(PaletteProperty); }
-            set { SetValue(PaletteProperty, value); }
+            get => (IEnumerable<Color>)GetValue(PaletteProperty);
+            set => SetValue(PaletteProperty, value);
         }
 
         public static readonly DependencyProperty PaletteProperty =
@@ -233,8 +339,8 @@ namespace AssyntSoftware.WinUI3Controls
 
         public int CellsPerColumn
         {
-            get { return (int)GetValue(CellsPerColumnProperty); }
-            set { SetValue(CellsPerColumnProperty, value); }
+            get => (int)GetValue(CellsPerColumnProperty);
+            set => SetValue(CellsPerColumnProperty, value);
         }
 
         public static readonly DependencyProperty CellsPerColumnProperty =
@@ -251,29 +357,29 @@ namespace AssyntSoftware.WinUI3Controls
 
         public bool ShouldConstrainToRootBounds
         {
-            get { return (bool)GetValue(ShouldConstrainToRootBoundsProperty); }
-            set { SetValue(ShouldConstrainToRootBoundsProperty, value); }
+            get => (bool)GetValue(ShouldConstrainToRootBoundsProperty);
+            set => SetValue(ShouldConstrainToRootBoundsProperty, value);
         }
 
         public static readonly DependencyProperty ShouldConstrainToRootBoundsProperty =
             DependencyProperty.Register(nameof(ShouldConstrainToRootBounds),
                 typeof(bool),
                 typeof(SimpleColorPicker),
-                new PropertyMetadata(true));
+                new PropertyMetadata(false));
 
-        private record Pos(int X, int Y)   // record structs are in language version 10.0
+        public enum InitialSelection { None, ExactMatchOnly, ClosestMatch }
+
+        public InitialSelection InitialSelectionMode
         {
-            public Pos NextLeft() => new Pos(X - 1, Y); 
-            public Pos NextRight() => new Pos(X + 1, Y);
-            public Pos NextUp() => new Pos(X, Y - 1);
-            public Pos NextDown() => new Pos(X, Y + 1);
+            get => (InitialSelection)GetValue(InitialSelectionModeProperty);
+            set => SetValue(InitialSelectionModeProperty, value);
+        }
 
-            public Pos GoToStartOfNextRow() => new Pos(0, Y + 1);
-            public Pos GoToStartOfNextColumn() => new Pos(X + 1, 0);
-            public Pos GoToEndOfPreviousRow(int xCount) => new Pos(xCount - 1, Y - 1);
-            public Pos GoToEndOfPreviousColumn(int yCount) => new Pos(X - 1, yCount - 1);
-        };
-
+        public static readonly DependencyProperty InitialSelectionModeProperty =
+            DependencyProperty.Register(nameof(InitialSelectionMode),
+                typeof(InitialSelection),
+                typeof(SimpleColorPicker),
+                new PropertyMetadata(InitialSelection.None));
 
         private void CreateCustomPaletteGrid()
         {
@@ -371,13 +477,9 @@ namespace AssyntSoftware.WinUI3Controls
             border.Tag = new Pos(x, y);
             border.Background = new SolidColorBrush(color);
             border.ScaleTransition = new Vector3Transition();
+            border.ScaleTransition.Duration = TimeSpan.FromMilliseconds(200);
             border.PointerEntered += Border_PointerEntered;
-            border.PointerExited += Border_PointerExited;
             border.PointerReleased += Border_PointReleased;
-            border.GotFocus += Border_GotFocus;
-            border.LostFocus += Border_LostFocus;
-            border.KeyUp += Border_KeyUp;
-            border.KeyDown += Border_KeyDown;
 
             if (CellStyle is not null)
                 border.Style = CellStyle;
@@ -397,6 +499,52 @@ namespace AssyntSoftware.WinUI3Controls
                 G = (byte)((rgb >> 8) & 0x000000FF),
                 B = (byte)(rgb & 0x000000FF),
             };
+        }
+
+        private void AttemptSelectCurrentColor()
+        {
+            Debug.Assert(grid is not null);
+            Debug.Assert(selected is null);
+
+            if (InitialSelectionMode == InitialSelection.None)
+                return;
+
+            static double PerceivedColorDifference(Color a, Color b)
+            {
+                static double GrayScale(Color c) => (c.R * 0.30) + (c.G * 0.59) + (c.B * 0.11);
+                return Math.Abs(GrayScale(a) - GrayScale(b));
+            }
+
+            double minDifference = double.MaxValue;
+            Border? exactMatch = null;
+            Border? closestMatch = null;
+
+            foreach (UIElement child in grid.Children)
+            {
+                if (child is Border border)
+                {
+                    double difference = PerceivedColorDifference(Color, ((SolidColorBrush)border.Background).Color);
+
+                    if (difference < 0.00001)
+                    {
+                        exactMatch = border;
+                        break;
+                    }
+                    else if (difference < minDifference)
+                    {
+                        closestMatch = border;
+                        minDifference = difference;
+                    }
+                }
+            }
+
+            if (exactMatch is not null)
+                selected = exactMatch;
+            else if (InitialSelectionMode == InitialSelection.ClosestMatch)
+                selected = closestMatch;
+
+            if (selected is not null)
+                ZoomOut(selected);
         }
 
         public Style? CellStyle
@@ -419,51 +567,38 @@ namespace AssyntSoftware.WinUI3Controls
             }
         }
                 
-        private void ZoomColorOut(Border border)
+        private void ZoomOut(Border border)
         {
             border.CenterPoint = new Vector3((float)(border.ActualWidth / 2.0), (float)(border.ActualHeight / 2.0), 1.0f);
             Canvas.SetZIndex(border, 1);
             border.Scale = new Vector3((float)ZoomFactor, (float)ZoomFactor, 1.0f);
         }
 
-        private static void ZoomColorIn(Border border)
+        private static void ResetZoom(Border border)
         {
             Canvas.SetZIndex(border, 0);
-            border.Scale = new Vector3(1.0f, 1.0f, 1.0f);
+            border.Scale = Vector3.One;
         }
 
         private void Border_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
+            if (e.IsGenerated)
+                return;
+
             Border border = (Border)sender;
 
-            if (border.IsTabStop)
-                border.Focus(FocusState.Programmatic);
-            else
-                ZoomColorOut(border);
-        }
+            if (selected is not null)
+                ResetZoom(selected);
 
-        private static void Border_PointerExited(object sender, PointerRoutedEventArgs e)
-        {                   
-            Border border = (Border)sender;
-
-            if (!border.IsTabStop)
-                ZoomColorIn(border);
+            selected = border;
+            ZoomOut(border);
         }
 
         private void Border_PointReleased(object sender, PointerRoutedEventArgs e)
         {
             SetPickedColor((Border)sender);
+            ResetZoom((Border)sender);
             IsFlyoutOpen = false;
-        }
-
-        private void Border_GotFocus(object sender, RoutedEventArgs e)
-        {
-            ZoomColorOut((Border)sender);
-        }
-
-        private static void Border_LostFocus(object sender, RoutedEventArgs e)
-        {
-            ZoomColorIn((Border)sender);
         }
 
         private void SetPickedColor(Border border)
@@ -474,43 +609,18 @@ namespace AssyntSoftware.WinUI3Controls
                 Color = newColor;
         }
 
-        private void Border_KeyUp(object sender, KeyRoutedEventArgs e)
+        private record Pos(int X, int Y)   // record structs are in language version 10.0
         {
-            if (e.Key == VirtualKey.Enter)
-            {
-                SetPickedColor((Border)sender);
-                IsFlyoutOpen = false;
-            }
-        }
+            public Pos NextLeft() => new Pos(X - 1, Y);
+            public Pos NextRight() => new Pos(X + 1, Y);
+            public Pos NextUp() => new Pos(X, Y - 1);
+            public Pos NextDown() => new Pos(X, Y + 1);
 
-        private void Border_KeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            Debug.Assert(grid is not null);
-
-            if ((e.Key == VirtualKey.Up) || (e.Key == VirtualKey.Down) || (e.Key == VirtualKey.Left) || (e.Key == VirtualKey.Right))
-            {
-                if ((DateTime.UtcNow - lastKeyRepeat) > TimeSpan.FromMilliseconds(100)) // throttle focus changes
-                {
-                    lastKeyRepeat = DateTime.UtcNow;
-
-                    Pos pos = (Pos)((Border)sender).Tag;
-                    Pos newPos;
-
-                    switch (e.Key)
-                    {
-                        case VirtualKey.Up: newPos = MoveUp(pos); break;
-                        case VirtualKey.Down: newPos = MoveDown(pos); break;
-                        case VirtualKey.Left: newPos = MoveLeft(pos); break;
-                        default: newPos = MoveRight(pos); break;
-                    }
-
-                    UIElement? child = grid.Children.FirstOrDefault(x => (Pos)((Border)x).Tag == newPos);
-                    Debug.Assert(child is not null);
-
-                    child?.Focus(FocusState.Programmatic);
-                }
-            }
-        }
+            public Pos GoToStartOfNextRow() => new Pos(0, Y + 1);
+            public Pos GoToStartOfNextColumn() => new Pos(X + 1, 0);
+            public Pos GoToEndOfPreviousRow(int xCount) => new Pos(xCount - 1, Y - 1);
+            public Pos GoToEndOfPreviousColumn(int yCount) => new Pos(X - 1, yCount - 1);
+        };
 
         private bool IsInsideGrid(Pos pos)
         {
@@ -652,36 +762,6 @@ namespace AssyntSoftware.WinUI3Controls
             return new Pos(0, 0);
         }
 
-        private void PickButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
-        {
-            // It's being opened via the keyboard or a click on the indicator part of the split button.
-            // In this case enable keyboard navigation, an initial color border will be selected once IsTabStop is set.
-            // Wen clicking the down arrow, IsTabStop will be false with no initial selection and mouse only navigation.
-
-            if (!sender.Flyout.IsOpen)
-            {
-                Debug.Assert(grid is not null);
-
-                foreach (UIElement child in grid.Children)
-                    child.IsTabStop = true;
-
-                IsFlyoutOpen = true;
-            }
-        }
-
-        private void ResetFlyoutState()
-        {
-            Debug.Assert(grid is not null);
-
-            foreach (UIElement child in grid.Children)
-            {
-                if (child is Border border)
-                {
-                    border.IsTabStop = false;
-                    ZoomColorIn(border);
-                }
-            }
-        }
 
         private readonly static int[] sMiniPaletteColumnOffsets = { 0, 20, 40, 60, 80, 100, 120, 140, 150, 180 };
 
