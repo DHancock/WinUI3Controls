@@ -74,7 +74,7 @@ namespace AssyntSoftware.WinUI3Controls
 
                     if (FlyoutPresenterStyle is not null)
                         flyout.FlyoutPresenterStyle = FlyoutPresenterStyle;
-
+                    
                     if (IsFlyoutOpen)
                         Loaded += SimpleColorPicker_Loaded;
                 }
@@ -155,6 +155,14 @@ namespace AssyntSoftware.WinUI3Controls
                                 key = VirtualKey.Right;
                         }
                     }
+                    else if ((key == VirtualKey.Right) && (FlowDirection == FlowDirection.RightToLeft))
+                    {
+                        key =  VirtualKey.Left;
+                    }
+                    else if ((key == VirtualKey.Left) && (FlowDirection == FlowDirection.RightToLeft))
+                    {
+                        key = VirtualKey.Right;
+                    }
 
                     if ((newSelection is null) && (selected is not null))
                     {
@@ -203,7 +211,6 @@ namespace AssyntSoftware.WinUI3Controls
         {
             SimpleColorPicker picker = (SimpleColorPicker)sender;
             SetFlyoutOpenState(picker, picker.IsFlyoutOpen);
-            picker.Loaded -= SimpleColorPicker_Loaded;
         }
 
         private bool IsCustomPalette => (Palette is not null) && Palette.Any() && (CellsPerColumn > 0);
@@ -367,7 +374,7 @@ namespace AssyntSoftware.WinUI3Controls
                 typeof(SimpleColorPicker),
                 new PropertyMetadata(false));
 
-        public enum InitialSelection { None, ExactMatchOnly, ClosestMatch }
+        public enum InitialSelection { None, First, ExactMatch, ClosestMatch }
 
         public InitialSelection InitialSelectionMode
         {
@@ -465,7 +472,7 @@ namespace AssyntSoftware.WinUI3Controls
                     else
                         colorIndex = PaletteOrientation == Orientation.Horizontal ? (x * cDefaultSamplesPerColor) + y : (y * cDefaultSamplesPerColor) + x;
 
-                    grid.Children.Add(CreateBorder(x, y, ConvertToColor(sRGB[colorIndex])));
+                    grid.Children.Add(CreateBorder(x, y, sRGB[colorIndex]));
                 }
             }
         }
@@ -490,17 +497,6 @@ namespace AssyntSoftware.WinUI3Controls
             return border;
         }
 
-        private static Color ConvertToColor(uint rgb)
-        {
-            return new Color()
-            {
-                A = 0xFF,
-                R = (byte)(rgb >> 16),
-                G = (byte)((rgb >> 8) & 0x000000FF),
-                B = (byte)(rgb & 0x000000FF),
-            };
-        }
-
         private void AttemptSelectCurrentColor()
         {
             Debug.Assert(grid is not null);
@@ -509,39 +505,47 @@ namespace AssyntSoftware.WinUI3Controls
             if (InitialSelectionMode == InitialSelection.None)
                 return;
 
-            static double PerceivedColorDifference(Color a, Color b)
+            if (InitialSelectionMode == InitialSelection.First)
             {
-                static double GrayScale(Color c) => (c.R * 0.30) + (c.G * 0.59) + (c.B * 0.11);
-                return Math.Abs(GrayScale(a) - GrayScale(b));
+                if (grid.Children.Count > 0)
+                    selected = grid.Children[0] as Border;
             }
-
-            double minDifference = double.MaxValue;
-            Border? exactMatch = null;
-            Border? closestMatch = null;
-
-            foreach (UIElement child in grid.Children)
+            else
             {
-                if (child is Border border)
+                static double PerceivedColorDifference(Color a, Color b)
                 {
-                    double difference = PerceivedColorDifference(Color, ((SolidColorBrush)border.Background).Color);
+                    static double GrayScale(Color c) => (c.R * 0.30) + (c.G * 0.59) + (c.B * 0.11);
+                    return Math.Abs(GrayScale(a) - GrayScale(b));
+                }
 
-                    if (difference < 0.00001)
+                double minDifference = double.MaxValue;
+                Border? exactMatch = null;
+                Border? closestMatch = null;
+
+                foreach (UIElement child in grid.Children)
+                {
+                    if (child is Border border)
                     {
-                        exactMatch = border;
-                        break;
-                    }
-                    else if (difference < minDifference)
-                    {
-                        closestMatch = border;
-                        minDifference = difference;
+                        double difference = PerceivedColorDifference(Color, ((SolidColorBrush)border.Background).Color);
+
+                        if (difference < 0.00001)
+                        {
+                            exactMatch = border;
+                            break;
+                        }
+                        else if (difference < minDifference)
+                        {
+                            closestMatch = border;
+                            minDifference = difference;
+                        }
                     }
                 }
-            }
 
-            if (exactMatch is not null)
-                selected = exactMatch;
-            else if (InitialSelectionMode == InitialSelection.ClosestMatch)
-                selected = closestMatch;
+                if (exactMatch is not null)
+                    selected = exactMatch;
+                else if (InitialSelectionMode == InitialSelection.ClosestMatch)
+                    selected = closestMatch;
+            }
 
             if (selected is not null)
                 ZoomOut(selected);
@@ -763,219 +767,219 @@ namespace AssyntSoftware.WinUI3Controls
         }
 
 
-        private readonly static int[] sMiniPaletteColumnOffsets = { 0, 20, 40, 60, 80, 100, 120, 140, 150, 180 };
+        private static readonly int[] sMiniPaletteColumnOffsets = { 0, 20, 40, 60, 80, 100, 120, 140, 150, 180 };
 
-        private readonly static uint[] sRGB =
+        private static readonly Color[] sRGB =
         {
             // Red
-            0x5F1616,
-            0x7F1D1D,
-            0x991B1B,
-            0xB91C1C,
-            0xEF1010,
-            0xEF3434,
-            0xF87171,
-            0xFCA5A5,
-            0xFECACA,
-            0xFEE2E2,
+            new() { A = 0xFF, R = 0x5F,  G = 0x16, B = 0x16 },
+            new() { A = 0xFF, R = 0x7F,  G = 0x1D, B = 0x1D },
+            new() { A = 0xFF, R = 0x99,  G = 0x1B, B = 0x1B },
+            new() { A = 0xFF, R = 0xB9,  G = 0x1C, B = 0x1C },
+            new() { A = 0xFF, R = 0xEF,  G = 0x10, B = 0x10 },
+            new() { A = 0xFF, R = 0xEF,  G = 0x34, B = 0x34 },
+            new() { A = 0xFF, R = 0xF8,  G = 0x71, B = 0x71 },
+            new() { A = 0xFF, R = 0xFC,  G = 0xA5, B = 0xA5 },
+            new() { A = 0xFF, R = 0xFE,  G = 0xCA, B = 0xCA },
+            new() { A = 0xFF, R = 0xFE,  G = 0xE2, B = 0xE2 },
             // Orange
-            0x58200D,
-            0x7C2D12,
-            0x9A3412,
-            0xC2410C,
-            0xEA580C,
-            0xF97316,
-            0xFB923C,
-            0xFDBA74,
-            0xFED7AA,
-            0xFFEDD5,
+            new() { A = 0xFF, R = 0x58,  G = 0x20, B = 0x0D },
+            new() { A = 0xFF, R = 0x7C,  G = 0x2D, B = 0x12 },
+            new() { A = 0xFF, R = 0x9A,  G = 0x34, B = 0x12 },
+            new() { A = 0xFF, R = 0xC2,  G = 0x41, B = 0x0C },
+            new() { A = 0xFF, R = 0xEA,  G = 0x58, B = 0x0C },
+            new() { A = 0xFF, R = 0xF9,  G = 0x73, B = 0x16 },
+            new() { A = 0xFF, R = 0xFB,  G = 0x92, B = 0x3C },
+            new() { A = 0xFF, R = 0xFD,  G = 0xBA, B = 0x74 },
+            new() { A = 0xFF, R = 0xFE,  G = 0xD7, B = 0xAA },
+            new() { A = 0xFF, R = 0xFF,  G = 0xED, B = 0xD5 },
             // Amber
-            0x5A270B,
-            0x78350F,
-            0x92400E,
-            0xB45309,
-            0xD97706,
-            0xF59E0B,
-            0xFBBF24,
-            0xFCD34D,
-            0xFDE68A,
-            0xFEF3C7,
+            new() { A = 0xFF, R = 0x5A,  G = 0x27, B = 0x0B },
+            new() { A = 0xFF, R = 0x78,  G = 0x35, B = 0x0F },
+            new() { A = 0xFF, R = 0x92,  G = 0x40, B = 0x0E },
+            new() { A = 0xFF, R = 0xB4,  G = 0x53, B = 0x09 },
+            new() { A = 0xFF, R = 0xD9,  G = 0x77, B = 0x06 },
+            new() { A = 0xFF, R = 0xF5,  G = 0x9E, B = 0x0B },
+            new() { A = 0xFF, R = 0xFB,  G = 0xBF, B = 0x24 },
+            new() { A = 0xFF, R = 0xFC,  G = 0xD3, B = 0x4D },
+            new() { A = 0xFF, R = 0xFD,  G = 0xE6, B = 0x8A },
+            new() { A = 0xFF, R = 0xFE,  G = 0xF3, B = 0xC7 },
             // Yellow
-            0x532E0D,
-            0x713F12,
-            0x854D0E,
-            0xA16207,
-            0xCA8A04,
-            0xEAB308,
-            0xFACC15,
-            0xFDE047,
-            0xFEF08A,
-            0xFEF9C3,
+            new() { A = 0xFF, R = 0x53,  G = 0x2E, B = 0x0D },
+            new() { A = 0xFF, R = 0x71,  G = 0x3F, B = 0x12 },
+            new() { A = 0xFF, R = 0x85,  G = 0x4D, B = 0x0E },
+            new() { A = 0xFF, R = 0xA1,  G = 0x62, B = 0x07 },
+            new() { A = 0xFF, R = 0xCA,  G = 0x8A, B = 0x04 },
+            new() { A = 0xFF, R = 0xEA,  G = 0xB3, B = 0x08 },
+            new() { A = 0xFF, R = 0xFA,  G = 0xCC, B = 0x15 },
+            new() { A = 0xFF, R = 0xFD,  G = 0xE0, B = 0x47 },
+            new() { A = 0xFF, R = 0xFE,  G = 0xF0, B = 0x8A },
+            new() { A = 0xFF, R = 0xFE,  G = 0xF9, B = 0xC3 },
             // Lime
-            0x23350C,
-            0x365314,
-            0x3F6212,
-            0x4D7C0F,
-            0x65A30D,
-            0x84CC16,
-            0xA3E635,
-            0xBEF264,
-            0xD9F99D,
-            0xECFCCB,
+            new() { A = 0xFF, R = 0x23,  G = 0x35, B = 0x0C },
+            new() { A = 0xFF, R = 0x36,  G = 0x53, B = 0x14 },
+            new() { A = 0xFF, R = 0x3F,  G = 0x62, B = 0x12 },
+            new() { A = 0xFF, R = 0x4D,  G = 0x7C, B = 0x0F },
+            new() { A = 0xFF, R = 0x65,  G = 0xA3, B = 0x0D },
+            new() { A = 0xFF, R = 0x84,  G = 0xCC, B = 0x16 },
+            new() { A = 0xFF, R = 0xA3,  G = 0xE6, B = 0x35 },
+            new() { A = 0xFF, R = 0xBE,  G = 0xF2, B = 0x64 },
+            new() { A = 0xFF, R = 0xD9,  G = 0xF9, B = 0x9D },
+            new() { A = 0xFF, R = 0xEC,  G = 0xFC, B = 0xCB },
             // Green
-            0x0E3D20,
-            0x14532D,
-            0x166534,
-            0x15803D,
-            0x16A34A,
-            0x22C55E,
-            0x4ADE80,
-            0x86EFAC,
-            0xBBF7D0,
-            0xDCFCE7,
+            new() { A = 0xFF, R = 0x0E,  G = 0x3D, B = 0x20 },
+            new() { A = 0xFF, R = 0x14,  G = 0x53, B = 0x2D },
+            new() { A = 0xFF, R = 0x16,  G = 0x65, B = 0x34 },
+            new() { A = 0xFF, R = 0x15,  G = 0x80, B = 0x3D },
+            new() { A = 0xFF, R = 0x16,  G = 0xA3, B = 0x4A },
+            new() { A = 0xFF, R = 0x22,  G = 0xC5, B = 0x5E },
+            new() { A = 0xFF, R = 0x4A,  G = 0xDE, B = 0x80 },
+            new() { A = 0xFF, R = 0x86,  G = 0xEF, B = 0xAC },
+            new() { A = 0xFF, R = 0xBB,  G = 0xF7, B = 0xD0 },
+            new() { A = 0xFF, R = 0xDC,  G = 0xFC, B = 0xE7 },
             // Emerald
-            0x043D2E,
-            0x064E3B,
-            0x065F46,
-            0x047857,
-            0x059669,
-            0x10B981,
-            0x34D399,
-            0x6EE7B7,
-            0xA7F3D0,
-            0xD1FAE5,
+            new() { A = 0xFF, R = 0x04,  G = 0x3D, B = 0x2E },
+            new() { A = 0xFF, R = 0x06,  G = 0x4E, B = 0x3B },
+            new() { A = 0xFF, R = 0x06,  G = 0x5F, B = 0x46 },
+            new() { A = 0xFF, R = 0x04,  G = 0x78, B = 0x57 },
+            new() { A = 0xFF, R = 0x05,  G = 0x96, B = 0x69 },
+            new() { A = 0xFF, R = 0x10,  G = 0xB9, B = 0x81 },
+            new() { A = 0xFF, R = 0x34,  G = 0xD3, B = 0x99 },
+            new() { A = 0xFF, R = 0x6E,  G = 0xE7, B = 0xB7 },
+            new() { A = 0xFF, R = 0xA7,  G = 0xF3, B = 0xD0 },
+            new() { A = 0xFF, R = 0xD1,  G = 0xFA, B = 0xE5 },
             // Teal
-            0x0F3D39,
-            0x134E4A,
-            0x115E59,
-            0x0F766E,
-            0x0D9488,
-            0x14B8A6,
-            0x2DD4BF,
-            0x5EEAD4,
-            0x99F6E4,
-            0xCCFBF1,
+            new() { A = 0xFF, R = 0x0F,  G = 0x3D, B = 0x39 },
+            new() { A = 0xFF, R = 0x13,  G = 0x4E, B = 0x4A },
+            new() { A = 0xFF, R = 0x11,  G = 0x5E, B = 0x59 },
+            new() { A = 0xFF, R = 0x0F,  G = 0x76, B = 0x6E },
+            new() { A = 0xFF, R = 0x0D,  G = 0x94, B = 0x88 },
+            new() { A = 0xFF, R = 0x14,  G = 0xB8, B = 0xA6 },
+            new() { A = 0xFF, R = 0x2D,  G = 0xD4, B = 0xBF },
+            new() { A = 0xFF, R = 0x5E,  G = 0xEA, B = 0xD4 },
+            new() { A = 0xFF, R = 0x99,  G = 0xF6, B = 0xE4 },
+            new() { A = 0xFF, R = 0xCC,  G = 0xFB, B = 0xF1 },
             // Cyan
-            0x124153,
-            0x164E63,
-            0x155E75,
-            0x0E7490,
-            0x0891B2,
-            0x06B6D4,
-            0x22D3EE,
-            0x67E8F9,
-            0xA5F3FC,
-            0xCFFAFE,
+            new() { A = 0xFF, R = 0x12,  G = 0x41, B = 0x53 },
+            new() { A = 0xFF, R = 0x16,  G = 0x4E, B = 0x63 },
+            new() { A = 0xFF, R = 0x15,  G = 0x5E, B = 0x75 },
+            new() { A = 0xFF, R = 0x0E,  G = 0x74, B = 0x90 },
+            new() { A = 0xFF, R = 0x08,  G = 0x91, B = 0xB2 },
+            new() { A = 0xFF, R = 0x06,  G = 0xB6, B = 0xD4 },
+            new() { A = 0xFF, R = 0x22,  G = 0xD3, B = 0xEE },
+            new() { A = 0xFF, R = 0x67,  G = 0xE8, B = 0xF9 },
+            new() { A = 0xFF, R = 0xA5,  G = 0xF3, B = 0xFC },
+            new() { A = 0xFF, R = 0xCF,  G = 0xFA, B = 0xFE },
             // Light Blue
-            0x0A3D5B,
-            0x0C4A6E,
-            0x075985,
-            0x0369A1,
-            0x0284C7,
-            0x0EA5E9,
-            0x38BDF8,
-            0x7DD3FC,
-            0xBAE6FD,
-            0xE0F2FE,
+            new() { A = 0xFF, R = 0x0A,  G = 0x3D, B = 0x5B },
+            new() { A = 0xFF, R = 0x0C,  G = 0x4A, B = 0x6E },
+            new() { A = 0xFF, R = 0x07,  G = 0x59, B = 0x85 },
+            new() { A = 0xFF, R = 0x03,  G = 0x69, B = 0xA1 },
+            new() { A = 0xFF, R = 0x02,  G = 0x84, B = 0xC7 },
+            new() { A = 0xFF, R = 0x0E,  G = 0xA5, B = 0xE9 },
+            new() { A = 0xFF, R = 0x38,  G = 0xBD, B = 0xF8 },
+            new() { A = 0xFF, R = 0x7D,  G = 0xD3, B = 0xFC },
+            new() { A = 0xFF, R = 0xBA,  G = 0xE6, B = 0xFD },
+            new() { A = 0xFF, R = 0xE0,  G = 0xF2, B = 0xFE },
             // Blue
-            0x152960,
-            0x1E3A8A,
-            0x1E40AF,
-            0x1D4ED8,
-            0x2563EB,
-            0x3B82F6,
-            0x60A5FA,
-            0x93C5FD,
-            0xBFDBFE,
-            0xDBEAFE,
+            new() { A = 0xFF, R = 0x15,  G = 0x29, B = 0x60 },
+            new() { A = 0xFF, R = 0x1E,  G = 0x3A, B = 0x8A },
+            new() { A = 0xFF, R = 0x1E,  G = 0x40, B = 0xAF },
+            new() { A = 0xFF, R = 0x1D,  G = 0x4E, B = 0xD8 },
+            new() { A = 0xFF, R = 0x25,  G = 0x63, B = 0xEB },
+            new() { A = 0xFF, R = 0x3B,  G = 0x82, B = 0xF6 },
+            new() { A = 0xFF, R = 0x60,  G = 0xA5, B = 0xFA },
+            new() { A = 0xFF, R = 0x93,  G = 0xC5, B = 0xFD },
+            new() { A = 0xFF, R = 0xBF,  G = 0xDB, B = 0xFE },
+            new() { A = 0xFF, R = 0xDB,  G = 0xEA, B = 0xFE },
             // Indigo
-            0x222059,
-            0x312E81,
-            0x3730A3,
-            0x4338CA,
-            0x4F46E5,
-            0x6366F1,
-            0x818CF8,
-            0xA5B4FC,
-            0xC7D2FE,
-            0xE0E7FF,
+            new() { A = 0xFF, R = 0x22,  G = 0x20, B = 0x59 },
+            new() { A = 0xFF, R = 0x31,  G = 0x2E, B = 0x81 },
+            new() { A = 0xFF, R = 0x37,  G = 0x30, B = 0xA3 },
+            new() { A = 0xFF, R = 0x43,  G = 0x38, B = 0xCA },
+            new() { A = 0xFF, R = 0x4F,  G = 0x46, B = 0xE5 },
+            new() { A = 0xFF, R = 0x63,  G = 0x66, B = 0xF1 },
+            new() { A = 0xFF, R = 0x81,  G = 0x8C, B = 0xF8 },
+            new() { A = 0xFF, R = 0xA5,  G = 0xB4, B = 0xFC },
+            new() { A = 0xFF, R = 0xC7,  G = 0xD2, B = 0xFE },
+            new() { A = 0xFF, R = 0xE0,  G = 0xE7, B = 0xFF },
             // Violet
-            0x311361,
-            0x4C1D95,
-            0x5B21B6,
-            0x6D28D9,
-            0x7C3AED,
-            0x8B5CF6,
-            0xA78BFA,
-            0xC4B5FD,
-            0xDDD6FE,
-            0xEDE9FE,
+            new() { A = 0xFF, R = 0x31,  G = 0x13, B = 0x61 },
+            new() { A = 0xFF, R = 0x4C,  G = 0x1D, B = 0x95 },
+            new() { A = 0xFF, R = 0x5B,  G = 0x21, B = 0xB6 },
+            new() { A = 0xFF, R = 0x6D,  G = 0x28, B = 0xD9 },
+            new() { A = 0xFF, R = 0x7C,  G = 0x3A, B = 0xED },
+            new() { A = 0xFF, R = 0x8B,  G = 0x5C, B = 0xF6 },
+            new() { A = 0xFF, R = 0xA7,  G = 0x8B, B = 0xFA },
+            new() { A = 0xFF, R = 0xC4,  G = 0xB5, B = 0xFD },
+            new() { A = 0xFF, R = 0xDD,  G = 0xD6, B = 0xFE },
+            new() { A = 0xFF, R = 0xED,  G = 0xE9, B = 0xFE },
             // Purple
-            0x361154,
-            0x581C87,
-            0x6B21A8,
-            0x7E22CE,
-            0x9333EA,
-            0xA855F7,
-            0xC084FC,
-            0xD8B4FE,
-            0xE9D5FF,
-            0xF3E8FF,
+            new() { A = 0xFF, R = 0x36,  G = 0x11, B = 0x54 },
+            new() { A = 0xFF, R = 0x58,  G = 0x1C, B = 0x87 },
+            new() { A = 0xFF, R = 0x6B,  G = 0x21, B = 0xA8 },
+            new() { A = 0xFF, R = 0x7E,  G = 0x22, B = 0xCE },
+            new() { A = 0xFF, R = 0x93,  G = 0x33, B = 0xEA },
+            new() { A = 0xFF, R = 0xA8,  G = 0x55, B = 0xF7 },
+            new() { A = 0xFF, R = 0xC0,  G = 0x84, B = 0xFC },
+            new() { A = 0xFF, R = 0xD8,  G = 0xB4, B = 0xFE },
+            new() { A = 0xFF, R = 0xE9,  G = 0xD5, B = 0xFF },
+            new() { A = 0xFF, R = 0xF3,  G = 0xE8, B = 0xFF },
             // Fuchsia
-            0x46104A,
-            0x701A75,
-            0x86198F,
-            0xA21CAF,
-            0xC026D3,
-            0xD946EF,
-            0xE879F9,
-            0xF0ABFC,
-            0xF5D0FE,
-            0xFAE8FF,
+            new() { A = 0xFF, R = 0x46,  G = 0x10, B = 0x4A },
+            new() { A = 0xFF, R = 0x70,  G = 0x1A, B = 0x75 },
+            new() { A = 0xFF, R = 0x86,  G = 0x19, B = 0x8F },
+            new() { A = 0xFF, R = 0xA2,  G = 0x1C, B = 0xAF },
+            new() { A = 0xFF, R = 0xC0,  G = 0x26, B = 0xD3 },
+            new() { A = 0xFF, R = 0xD9,  G = 0x46, B = 0xEF },
+            new() { A = 0xFF, R = 0xE8,  G = 0x79, B = 0xF9 },
+            new() { A = 0xFF, R = 0xF0,  G = 0xAB, B = 0xFC },
+            new() { A = 0xFF, R = 0xF5,  G = 0xD0, B = 0xFE },
+            new() { A = 0xFF, R = 0xFA,  G = 0xE8, B = 0xFF },
             // Pink
-            0x5E1131,
-            0x831843,
-            0x9D174D,
-            0xBE185D,
-            0xDB2777,
-            0xEC4899,
-            0xF472B6,
-            0xF9A8D4,
-            0xFBCFE8,
-            0xFCE7F3,
+            new() { A = 0xFF, R = 0x5E,  G = 0x11, B = 0x31 },
+            new() { A = 0xFF, R = 0x83,  G = 0x18, B = 0x43 },
+            new() { A = 0xFF, R = 0x9D,  G = 0x17, B = 0x4D },
+            new() { A = 0xFF, R = 0xBE,  G = 0x18, B = 0x5D },
+            new() { A = 0xFF, R = 0xDB,  G = 0x27, B = 0x77 },
+            new() { A = 0xFF, R = 0xEC,  G = 0x48, B = 0x99 },
+            new() { A = 0xFF, R = 0xF4,  G = 0x72, B = 0xB6 },
+            new() { A = 0xFF, R = 0xF9,  G = 0xA8, B = 0xD4 },
+            new() { A = 0xFF, R = 0xFB,  G = 0xCF, B = 0xE8 },
+            new() { A = 0xFF, R = 0xFC,  G = 0xE7, B = 0xF3 },
             // Rose
-            0x550B22,
-            0x881337,
-            0x9F1239,
-            0xBE123C,
-            0xE11D48,
-            0xF43F5E,
-            0xFB7185,
-            0xFDA4AF,
-            0xFECDD3,
-            0xFFE4E6,
+            new() { A = 0xFF, R = 0x55,  G = 0x0B, B = 0x22 },
+            new() { A = 0xFF, R = 0x88,  G = 0x13, B = 0x37 },
+            new() { A = 0xFF, R = 0x9F,  G = 0x12, B = 0x39 },
+            new() { A = 0xFF, R = 0xBE,  G = 0x12, B = 0x3C },
+            new() { A = 0xFF, R = 0xE1,  G = 0x1D, B = 0x48 },
+            new() { A = 0xFF, R = 0xF4,  G = 0x3F, B = 0x5E },
+            new() { A = 0xFF, R = 0xFB,  G = 0x71, B = 0x85 },
+            new() { A = 0xFF, R = 0xFD,  G = 0xA4, B = 0xAF },
+            new() { A = 0xFF, R = 0xFE,  G = 0xCD, B = 0xD3 },
+            new() { A = 0xFF, R = 0xFF,  G = 0xE4, B = 0xE6 },
             // Blue Gray
-            0x090E1A,
-            0x0F172A,
-            0x1E293B,
-            0x334155,
-            0x475569,
-            0x64748B,
-            0x94A3B8,
-            0xCBD5E1,
-            0xE2E8F0,
-            0xF1F5F9,
-            // True Gray
-            0x000000,
-            0x171717,
-            0x262626,
-            0x404040,
-            0x525252,
-            0x737373,
-            0xA3A3A3,
-            0xD4D4D4,
-            0xE5E5E5,
-            0xFFFFFF
+            new() { A = 0xFF, R = 0x09,  G = 0x0E, B = 0x1A },
+            new() { A = 0xFF, R = 0x0F,  G = 0x17, B = 0x2A },
+            new() { A = 0xFF, R = 0x1E,  G = 0x29, B = 0x3B },
+            new() { A = 0xFF, R = 0x33,  G = 0x41, B = 0x55 },
+            new() { A = 0xFF, R = 0x47,  G = 0x55, B = 0x69 },
+            new() { A = 0xFF, R = 0x64,  G = 0x74, B = 0x8B },
+            new() { A = 0xFF, R = 0x94,  G = 0xA3, B = 0xB8 },
+            new() { A = 0xFF, R = 0xCB,  G = 0xD5, B = 0xE1 },
+            new() { A = 0xFF, R = 0xE2,  G = 0xE8, B = 0xF0 },
+            new() { A = 0xFF, R = 0xF1,  G = 0xF5, B = 0xF9 },
+            // Gray
+            new() { A = 0xFF, R = 0x00,  G = 0x00, B = 0x00 },
+            new() { A = 0xFF, R = 0x17,  G = 0x17, B = 0x17 },
+            new() { A = 0xFF, R = 0x26,  G = 0x26, B = 0x26 },
+            new() { A = 0xFF, R = 0x40,  G = 0x40, B = 0x40 },
+            new() { A = 0xFF, R = 0x52,  G = 0x52, B = 0x52 },
+            new() { A = 0xFF, R = 0x73,  G = 0x73, B = 0x73 },
+            new() { A = 0xFF, R = 0xA3,  G = 0xA3, B = 0xA3 },
+            new() { A = 0xFF, R = 0xD4,  G = 0xD4, B = 0xD4 },
+            new() { A = 0xFF, R = 0xE5,  G = 0xE5, B = 0xE5 },
+            new() { A = 0xFF, R = 0xFF,  G = 0xFF, B = 0xFF }
         };
     }
 
