@@ -123,6 +123,8 @@ namespace AssyntSoftware.WinUI3Controls
         {
             if (selected is not null)
                 ResetZoom(selected);
+
+            e.Handled = true;
         }
 
         private void Grid_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
@@ -192,6 +194,8 @@ namespace AssyntSoftware.WinUI3Controls
                     }
                 }
             }
+
+            e.Handled = true;
         }
 
         private void Grid_PreviewKeyUp(object sender, KeyRoutedEventArgs e)
@@ -202,9 +206,9 @@ namespace AssyntSoftware.WinUI3Controls
 
                 if ((selected is not null) && (selected.Scale != Vector3.One))
                     SetPickedColor(selected);
-
-                e.Handled = true;
             }
+
+            e.Handled = true;
         }
 
         private static void SimpleColorPicker_Loaded(object sender, RoutedEventArgs e)
