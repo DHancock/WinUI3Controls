@@ -21,7 +21,7 @@ namespace AssyntSoftware.WinUI3Controls
     public sealed class SimpleColorPicker : Control
     {
         private const int cDefaultSamplesPerColor = 10;  // the number of shades of a color in the default palettes
-        
+
         public event TypedEventHandler<SimpleColorPicker, Color>? ColorChanged;
         public event TypedEventHandler<SimpleColorPicker, bool>? FlyoutOpened;
         public event TypedEventHandler<SimpleColorPicker, bool>? FlyoutClosed;
@@ -38,7 +38,7 @@ namespace AssyntSoftware.WinUI3Controls
         {
             this.DefaultStyleKey = typeof(SimpleColorPicker);
         }
-            
+
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -60,7 +60,7 @@ namespace AssyntSoftware.WinUI3Controls
                 if ((pickButton.Flyout is Flyout flyout) && (flyout.Content is Grid root))
                 {
                     flyout.Opening += Flyout_Opening;
-                    flyout.Opened += Flyout_Opened; 
+                    flyout.Opened += Flyout_Opened;
                     flyout.Closed += Flyout_Closed;
 
                     grid = root;
@@ -74,7 +74,7 @@ namespace AssyntSoftware.WinUI3Controls
 
                     if (FlyoutPresenterStyle is not null)
                         flyout.FlyoutPresenterStyle = FlyoutPresenterStyle;
-                    
+
                     if (IsFlyoutOpen)
                         Loaded += SimpleColorPicker_Loaded;
                 }
@@ -83,7 +83,11 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void Flyout_Opening(object? sender, object e)
         {
-            if (grid?.Children.Count == 0)
+            Debug.Assert(grid is not null);
+            Debug.Assert(selected is null);
+            Debug.Assert(grid.Children.All(x => x.Scale.Equals(Vector3.One)));
+
+            if (grid.Children.Count == 0)
             {
                 if (IsCustomPalette)
                     CreateCustomPaletteGrid();
@@ -102,13 +106,6 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void Flyout_Closed(object? sender, object e)
         {
-            if (selected is not null)
-            {
-                ResetZoom(selected);
-                selected = null;
-            }
-
-            IsFlyoutOpen = false;
             FlyoutClosed?.Invoke(this, false);
         }
 
@@ -161,7 +158,7 @@ namespace AssyntSoftware.WinUI3Controls
                     }
                     else if ((key == VirtualKey.Right) && (FlowDirection == FlowDirection.RightToLeft))
                     {
-                        key =  VirtualKey.Left;
+                        key = VirtualKey.Left;
                     }
                     else if ((key == VirtualKey.Left) && (FlowDirection == FlowDirection.RightToLeft))
                     {
@@ -205,8 +202,16 @@ namespace AssyntSoftware.WinUI3Controls
             {
                 IsFlyoutOpen = false;
 
-                if ((selected is not null) && (selected.Scale != Vector3.One))
-                    SetPickedColor(selected);
+                if (selected is not null)
+                {
+                    if (!selected.Scale.Equals(Vector3.One))
+                    {
+                        SetPickedColor(selected);
+                        ResetZoom(selected);
+                    }
+
+                    selected = null;
+                }
             }
 
             e.Handled = true;
@@ -269,7 +274,7 @@ namespace AssyntSoftware.WinUI3Controls
 
         private static void IsFlyoutOpenPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            SetFlyoutOpenState((SimpleColorPicker)d, (bool)e.NewValue); 
+            SetFlyoutOpenState((SimpleColorPicker)d, (bool)e.NewValue);
         }
 
         private static void SetFlyoutOpenState(SimpleColorPicker picker, bool toOpen)
@@ -575,7 +580,7 @@ namespace AssyntSoftware.WinUI3Controls
                     flyoutPresenterStyle = value;
             }
         }
-                
+
         private void ZoomOut(Border border)
         {
             border.CenterPoint = new Vector3((float)(border.ActualWidth / 2.0), (float)(border.ActualHeight / 2.0), 1.0f);
@@ -607,6 +612,7 @@ namespace AssyntSoftware.WinUI3Controls
         {
             SetPickedColor((Border)sender);
             ResetZoom((Border)sender);
+            selected = null;
             IsFlyoutOpen = false;
         }
 
@@ -648,7 +654,7 @@ namespace AssyntSoftware.WinUI3Controls
 
             if ((pos.X == (xCount - 1)) && (pos.Y > last.Y))
                 return false;
-         
+
             if ((pos.Y == (yCount - 1)) && (pos.X > last.X))
                 return false;
 
@@ -707,8 +713,8 @@ namespace AssyntSoftware.WinUI3Controls
 
                 return newPos.NextLeft();
             }
-            
-            return Last();  
+
+            return Last();
         }
 
         private Pos MoveRight(Pos currentPos)
