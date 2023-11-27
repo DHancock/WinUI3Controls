@@ -129,6 +129,8 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void Grid_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
         {
+            Grid grid = (Grid)sender;
+
             if ((e.Key == VirtualKey.Tab) || (e.Key == VirtualKey.Up) || (e.Key == VirtualKey.Down) || (e.Key == VirtualKey.Left) || (e.Key == VirtualKey.Right))
             {
                 if ((DateTime.UtcNow - lastKeyRepeat) > TimeSpan.FromMilliseconds(100)) // throttle changes
@@ -145,14 +147,14 @@ namespace AssyntSoftware.WinUI3Controls
                         if (shift)
                         {
                             if (selected is null)
-                                newSelection = grid?.Children[grid.Children.Count - 1] as Border;
+                                newSelection = grid.Children[grid.Children.Count - 1] as Border;
                             else
                                 key = VirtualKey.Left;
                         }
                         else
                         {
                             if (selected is null)
-                                newSelection = grid?.Children[0] as Border;
+                                newSelection = grid.Children[0] as Border;
                             else
                                 key = VirtualKey.Right;
                         }
@@ -180,8 +182,7 @@ namespace AssyntSoftware.WinUI3Controls
                             default: Debug.Fail(key.ToString()); return;
                         }
 
-                        newSelection = grid?.Children.FirstOrDefault(x => (Pos)((Border)x).Tag == newPos) as Border;
-                        Debug.Assert(newSelection is not null);
+                        newSelection = grid.Children[(grid.ColumnDefinitions.Count * newPos.Y) + newPos.X] as Border;
                     }
 
                     if (newSelection is not null)
