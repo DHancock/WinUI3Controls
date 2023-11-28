@@ -48,6 +48,7 @@ namespace AssyntSoftware.WinUI3Controls
             if (pickButton is not null)
             {
                 pickButton.Click += PickButton_Click;
+                pickButton.PreviewKeyUp += PickButton_PreviewKeyUp;
 
                 indicatorBorder = pickButton.Content as Border;
 
@@ -95,6 +96,7 @@ namespace AssyntSoftware.WinUI3Controls
                     CreateDefaultPaletteGrid();
             }
 
+            // open immediately, allowing for the preferred placement to be specified
             IsFlyoutOpen = true;
         }
 
@@ -106,14 +108,34 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void Flyout_Closed(object? sender, object e)
         {
+            // reset for when the flyout was dismissed without selecting a border
+            if (IsFlyoutOpen)
+                IsFlyoutOpen = false;
+
+            if (selected is not null)
+            {
+                ResetZoom(selected);
+                selected = null;
+            }
+
             FlyoutClosed?.Invoke(this, false);
         }
 
         private void PickButton_Click(SplitButton sender, SplitButtonClickEventArgs args)
         {
-            // The flyout is being opened via the keyboard or a click on the indicator part of the split button.
+            // The flyout is being opened via the Enter key or a click on the indicator part of the split button.
             // When clicking the down arrow, this code isn't called.
             IsFlyoutOpen = true;
+        }
+
+        private void PickButton_PreviewKeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            // while the split button responds to the Enter key, Space seems to have been missed
+            if (e.Key == VirtualKey.Space)
+            {
+                IsFlyoutOpen = true;
+                e.Handled = true;
+            }
         }
 
         private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
