@@ -109,8 +109,7 @@ namespace AssyntSoftware.WinUI3Controls
         private void Flyout_Closed(object? sender, object e)
         {
             // reset for when the flyout was dismissed without selecting a border
-            if (IsFlyoutOpen)
-                IsFlyoutOpen = false;
+            IsFlyoutOpen = false;
 
             if (selected is not null)
             {
@@ -222,8 +221,6 @@ namespace AssyntSoftware.WinUI3Controls
         {
             if ((e.Key == VirtualKey.Space) || (e.Key == VirtualKey.Enter))
             {
-                IsFlyoutOpen = false;
-
                 if (selected is not null)
                 {
                     if (!selected.Scale.Equals(Vector3.One))
@@ -234,6 +231,8 @@ namespace AssyntSoftware.WinUI3Controls
 
                     selected = null;
                 }
+
+                IsFlyoutOpen = false;
             }
 
             e.Handled = true;
