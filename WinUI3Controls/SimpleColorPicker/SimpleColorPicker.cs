@@ -223,16 +223,20 @@ namespace AssyntSoftware.WinUI3Controls
             {
                 if (selected is not null)
                 {
-                    if (!selected.Scale.Equals(Vector3.One))
-                    {
-                        SetPickedColor(selected);
-                        ResetZoom(selected);
-                    }
+                    Border? colorBorder = selected;
 
                     selected = null;
-                }
+                    IsFlyoutOpen = false;
 
-                IsFlyoutOpen = false;
+                    // check that the mouse hasn't been moved outside of the grid
+                    if (!colorBorder.Scale.Equals(Vector3.One))
+                    {
+                        ResetZoom(colorBorder);
+
+                        // updates the color dependency property and raises a color changed event
+                        SetPickedColor(colorBorder);
+                    }
+                }
             }
 
             e.Handled = true;
@@ -631,10 +635,12 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void Border_PointReleased(object sender, PointerRoutedEventArgs e)
         {
-            SetPickedColor((Border)sender);
             ResetZoom((Border)sender);
             selected = null;
             IsFlyoutOpen = false;
+
+            // updates the color dependency property and raises a color changed event
+            SetPickedColor((Border)sender);
         }
 
         private void SetPickedColor(Border border)
