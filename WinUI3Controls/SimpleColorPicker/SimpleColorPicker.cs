@@ -219,20 +219,20 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void Grid_PreviewKeyUp(object sender, KeyRoutedEventArgs e)
         {
-            if ((e.Key == VirtualKey.Space) || (e.Key == VirtualKey.Enter))
+            if ((e.Key == VirtualKey.Space) || (e.Key == VirtualKey.Enter) || (e.Key == VirtualKey.Escape) || (e.Key == VirtualKey.Back))
             {
-                if (selected is not null)
+                Border? colorBorder = selected;
+
+                selected = null;
+                IsFlyoutOpen = false;
+
+                // check that the mouse hasn't been moved outside of the grid
+                if (colorBorder?.Scale.Equals(Vector3.One) == false)
                 {
-                    Border? colorBorder = selected;
+                    ResetZoom(colorBorder);
 
-                    selected = null;
-                    IsFlyoutOpen = false;
-
-                    // check that the mouse hasn't been moved outside of the grid
-                    if (!colorBorder.Scale.Equals(Vector3.One))
+                    if ((e.Key != VirtualKey.Escape) && (e.Key != VirtualKey.Back))
                     {
-                        ResetZoom(colorBorder);
-
                         // updates the color dependency property and raises a color changed event
                         SetPickedColor(colorBorder);
                     }
