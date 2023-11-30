@@ -212,10 +212,10 @@ namespace AssyntSoftware.WinUI3Controls
                                 index -= newPos.Y - (last.Y + 1);
 
                             newSelection = grid.Children[index] as Border;
-
-                            Debug.Assert(newSelection is not null);
-                            Debug.Assert((Pos)newSelection.Tag == newPos);
                         }
+
+                        Debug.Assert(newSelection is not null);
+                        Debug.Assert((Pos)newSelection.Tag == newPos);
                     }
 
                     if (newSelection is not null)
