@@ -200,22 +200,19 @@ namespace AssyntSoftware.WinUI3Controls
                             default: Debug.Fail(key.ToString()); return;
                         }
 
-                        if (PaletteOrientation == Orientation.Vertical)
-                            newSelection = grid.Children[(grid.ColumnDefinitions.Count * newPos.Y) + newPos.X] as Border;
-                        else
+                        int index = (grid.ColumnDefinitions.Count * newPos.Y) + newPos.X;
+
+                        if (PaletteOrientation == Orientation.Horizontal) // the last column may be incomplete
                         {
-                            // the last column may be incomplete
                             Pos last = Last();
-                            int index = (grid.ColumnDefinitions.Count * newPos.Y) + newPos.X;
-
-                            if (newPos.Y > (last.Y + 1)) // adjust index by the number of empty column positions above this row
-                                index -= newPos.Y - (last.Y + 1);
-
-                            newSelection = grid.Children[index] as Border;
+                            // adjust index by the number of empty column positions above this row
+                            index -= Math.Max(0, newPos.Y - (last.Y + 1));
                         }
 
+                        newSelection = grid.Children[index] as Border;
+
                         Debug.Assert(newSelection is not null);
-                        Debug.Assert((Pos)newSelection.Tag == newPos);
+                        Debug.Assert(((Pos)newSelection.Tag).Equals(newPos));
                     }
 
                     if (newSelection is not null)
