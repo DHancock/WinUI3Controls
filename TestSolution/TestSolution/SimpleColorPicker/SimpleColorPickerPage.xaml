@@ -42,10 +42,6 @@
                         <Setter Property="Padding" Value="6"/>
                     </Style>
 
-                    <Style TargetType="w3c:SimpleColorPicker">
-                        <Setter Property="ShouldConstrainToRootBounds" Value="false"/>
-                    </Style>
-                    
                     <Style TargetType="TextBlock">
                         <Setter Property="Margin" Value="0,0,10,0"/>
                         <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -72,16 +68,19 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="4" HorizontalAlignment="Right" Content="Toggle Theme" Click="Button_Click"/>
+            <Button Grid.Column="5" HorizontalAlignment="Right" Content="Toggle Theme" Click="Button_Click"/>
 
             <TextBlock Grid.Row="1" Text="Defaults:"/>
             <w3c:SimpleColorPicker Grid.Row="1" Grid.Column="1"  Color="{x:Bind BC, Mode=TwoWay}" ColorChanged="SimpleColorPicker_ColorChanged"/>
 
             <TextBlock Grid.Row="2" Text="Mini palette:"/>
-            <w3c:SimpleColorPicker Grid.Row="2" Grid.Column="1" IsMiniPalette="True" Color="{x:Bind BC, Mode=TwoWay}"/>
+            <w3c:SimpleColorPicker x:Name="MiniPaletePicker" Grid.Row="2" Grid.Column="1" IsMiniPalette="True" Color="{x:Bind BC, Mode=TwoWay}" />
+            <TextBlock Text="Initial selection mode" Grid.Row="2" Grid.Column="2"/>
+            <ComboBox x:Name="InitialSelectionComboBox" Loaded="InitialSelectionComboBox_Loaded" SelectionChanged="InitialSelectionComboBox_SelectionChanged" Grid.Row="2" Grid.Column="3"/>
 
             <TextBlock Grid.Row="3" Text="Vertical palette orientation:"/>
             <w3c:SimpleColorPicker Grid.Row="3" Grid.Column="1" PaletteOrientation="Vertical"  Color="{x:Bind BC, Mode=TwoWay}"/>
