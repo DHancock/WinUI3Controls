@@ -559,10 +559,9 @@ namespace AssyntSoftware.WinUI3Controls
             }
             else
             {
-                static double PerceivedColorDifference(Color a, Color b)
+                static double SimpleColorDifference(Color a, Color b)
                 {
-                    static double GrayScale(Color c) => (c.R * 0.30) + (c.G * 0.59) + (c.B * 0.11);
-                    return Math.Abs(GrayScale(a) - GrayScale(b));
+                    return Math.Pow(a.R - b.R, 2) + Math.Pow(a.G - b.G, 2) + Math.Pow(a.B - b.B, 2);
                 }
 
                 double minDifference = double.MaxValue;
@@ -573,7 +572,7 @@ namespace AssyntSoftware.WinUI3Controls
                 {
                     if (child is Border border)
                     {
-                        double difference = PerceivedColorDifference(Color, ((SolidColorBrush)border.Background).Color);
+                        double difference = SimpleColorDifference(Color, ((SolidColorBrush)border.Background).Color);
 
                         if (difference < 0.00001)
                         {
