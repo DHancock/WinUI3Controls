@@ -188,7 +188,7 @@ namespace AssyntSoftware.WinUI3Controls
 
                     if ((newSelection is null) && (selected is not null))
                     {
-                        Pos pos = (Pos)selected.Tag;
+                        Pos pos = new Pos(Grid.GetColumn(selected), Grid.GetRow(selected));
                         Pos newPos;
 
                         switch (key)
@@ -212,7 +212,8 @@ namespace AssyntSoftware.WinUI3Controls
                         newSelection = grid.Children[index] as Border;
 
                         Debug.Assert(newSelection is not null);
-                        Debug.Assert(((Pos)newSelection.Tag).Equals(newPos));
+                        Debug.Assert(newPos.X == Grid.GetColumn(newSelection));
+                        Debug.Assert(newPos.Y == Grid.GetRow(newSelection));
                     }
 
                     if (newSelection is not null)
@@ -528,7 +529,6 @@ namespace AssyntSoftware.WinUI3Controls
         {
             Border border = new Border();
 
-            border.Tag = new Pos(x, y);
             border.Background = new SolidColorBrush(color);
             border.ScaleTransition = new Vector3Transition();
             border.ScaleTransition.Duration = TimeSpan.FromMilliseconds(200);
