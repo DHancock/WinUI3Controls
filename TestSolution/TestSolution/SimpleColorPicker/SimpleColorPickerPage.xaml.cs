@@ -19,6 +19,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
 
+
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -140,6 +141,18 @@ namespace TestSolution.SimpleColorPicker
         private void SimpleColorPicker_FlyoutClosed(AssyntSoftware.WinUI3Controls.SimpleColorPicker sender, bool args)
         {
             eventReceivedFeedback.Text = "event received: Closed"; 
+        }
+
+        private void InitialSelectionComboBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            InitialSelectionComboBox.ItemsSource = Enum.GetNames<AssyntSoftware.WinUI3Controls.SimpleColorPicker.InitialSelection>();
+            InitialSelectionComboBox.SelectedItem = InitialSelectionComboBox.Items[0];
+        }
+
+        private void InitialSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            String value = (String)InitialSelectionComboBox.SelectedItem;
+            MiniPaletePicker.InitialSelectionMode = Enum.Parse<AssyntSoftware.WinUI3Controls.SimpleColorPicker.InitialSelection>(value);
         }
     }
 }
