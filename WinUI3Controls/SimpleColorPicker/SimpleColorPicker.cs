@@ -188,7 +188,7 @@ namespace AssyntSoftware.WinUI3Controls
 
                     if ((newSelection is null) && (selected is not null))
                     {
-                        Pos pos = (Pos)selected.Tag;
+                        Pos pos = new Pos(Grid.GetColumn(selected), Grid.GetRow(selected));
                         Pos newPos;
 
                         switch (key)
@@ -200,22 +200,20 @@ namespace AssyntSoftware.WinUI3Controls
                             default: Debug.Fail(key.ToString()); return;
                         }
 
-                        if (PaletteOrientation == Orientation.Vertical)
-                            newSelection = grid.Children[(grid.ColumnDefinitions.Count * newPos.Y) + newPos.X] as Border;
-                        else
+                        int index = (grid.ColumnDefinitions.Count * newPos.Y) + newPos.X;
+
+                        if (PaletteOrientation == Orientation.Horizontal) // the last column may be incomplete
                         {
-                            // the last column may be incomplete
                             Pos last = Last();
-                            int index = (grid.ColumnDefinitions.Count * newPos.Y) + newPos.X;
-
-                            if (newPos.Y > (last.Y + 1)) // adjust index by the number of empty column positions above this row
-                                index -= newPos.Y - (last.Y + 1);
-
-                            newSelection = grid.Children[index] as Border;
-
-                            Debug.Assert(newSelection is not null);
-                            Debug.Assert((Pos)newSelection.Tag == newPos);
+                            // adjust index by the number of empty column positions above this row
+                            index -= Math.Max(0, newPos.Y - (last.Y + 1));
                         }
+
+                        newSelection = grid.Children[index] as Border;
+
+                        Debug.Assert(newSelection is not null);
+                        Debug.Assert(newPos.X == Grid.GetColumn(newSelection));
+                        Debug.Assert(newPos.Y == Grid.GetRow(newSelection));
                     }
 
                     if (newSelection is not null)
@@ -531,7 +529,6 @@ namespace AssyntSoftware.WinUI3Controls
         {
             Border border = new Border();
 
-            border.Tag = new Pos(x, y);
             border.Background = new SolidColorBrush(color);
             border.ScaleTransition = new Vector3Transition();
             border.ScaleTransition.Duration = TimeSpan.FromMilliseconds(200);
