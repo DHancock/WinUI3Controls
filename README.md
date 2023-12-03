@@ -50,6 +50,7 @@ Further examples can be found in the [TestSolution](TestSolution)
 
 |Version|Changes|
 |-------|:------|
+|2.1.1|[Fixes](https://github.com/DHancock/WinUI3Controls/releases/tag/2.1.1) to the simple color picker control.|
 |2.1.0|Add simple color picker control.|
 |2.0.3|Draw border when the group box is the target of a TeachingTip. [#21](https://github.com/DHancock/WinUI3Controls/pull/21).|
 |2.0.2|Fix adding size changed event handlers [#18](https://github.com/DHancock/WinUI3Controls/pull/18).|
