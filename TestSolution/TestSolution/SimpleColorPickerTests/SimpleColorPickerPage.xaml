@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
-    x:Class="TestSolution.SimpleColorPicker.SimpleColorPickerPage"
+    x:Class="TestSolution.SimpleColorPickerTests.SimpleColorPickerPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TestSolution.SimpleColorPicker"
+    xmlns:local="using:TestSolution.SimpleColorPickerTests"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:w3c="using:AssyntSoftware.WinUI3Controls"
@@ -130,7 +130,7 @@
             <TextBlock x:Name="eventReceivedFeedback" Text="event received:" Grid.Row="8" Grid.Column="2" HorizontalAlignment="Left" Grid.ColumnSpan="2"/>
 
             <TextBlock Grid.Row="9" Text="IsFlyoutOpen property:"/>
-            <w3c:SimpleColorPicker x:Name="openPicker" Grid.Row="9" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" IsMiniPalette="True"/>
+            <local:InheritedPicker x:Name="openPicker" Grid.Row="9" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}"/>
             <CheckBox Content="Flyout open" IsChecked="{x:Bind openPicker.IsFlyoutOpen, Mode=TwoWay}" Grid.Row="9" Grid.Column="2"/>
 
             <TextBlock Grid.Row="10" Text="color property:"/>

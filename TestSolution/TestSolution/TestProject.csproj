@@ -13,12 +13,6 @@
 	<WindowsPackageType>None</WindowsPackageType>
 	<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="GroupBox\DataTemplateSelectorPage.xaml" />
-    <None Remove="GroupBox\PropertiesPage.xaml" />
-    <None Remove="GroupBox\StylePage.xaml" />
-    <None Remove="SimpleColorPicker\SimpleColorPickerPage.xaml" />
-  </ItemGroup>
 
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
@@ -31,21 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\WinUI3Controls\WinUI3Controls.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="GroupBox\DataTemplateSelectorPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="GroupBox\PropertiesPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="GroupBox\StylePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-	  <Page Update="SimpleColorPicker\SimpleColorPickerPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-	  </Page>
   </ItemGroup>
 
 	<!-- Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging

@@ -1,8 +1,8 @@
 ﻿<Page
-    x:Class="TestSolution.GroupBox.StylePage"
+    x:Class="TestSolution.GroupBoxTests.StylePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TestSolution.GroupBox"
+    xmlns:local="using:TestSolution.GroupBoxTests"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:w3c="using:AssyntSoftware.WinUI3Controls"
@@ -17,7 +17,6 @@
 
             <Style x:Key="exampleStyle" TargetType="w3c:GroupBox">
                 <Setter Property="BorderBrush" Value="{StaticResource brush}"/>
-                <Setter Property="BorderThickness" Value="2"/>
                 <Setter Property="CornerRadius" Value="8"/>
                 <Setter Property="HeadingMargin" Value="20"/>
                 <Setter Property="HeadingBaseLineRatio" Value="0.55"/>
@@ -49,9 +48,9 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <w3c:GroupBox x:Name="StyledGroupBox" Style="{StaticResource exampleStyle}" Grid.Row="1" Grid.Column="1">
+        <local:InheritedGroupBox x:Name="StyledGroupBox" Style="{StaticResource exampleStyle}" Grid.Row="1" Grid.Column="1">
             <ToggleSwitch x:Name="SettingsToggleSwitch" OffContent="Closed" OnContent="Open" IsOn="False"/>
-        </w3c:GroupBox>
+        </local:InheritedGroupBox>
     </Grid>
 </Page>
 
