@@ -97,7 +97,7 @@ namespace TestSolution.SimpleColorPicker
         }
 
 
-        private static List<Color> BuildRandomPalette()
+        public static List<Color> BuildRandomPalette()
         {
             List<Color> palette = new List<Color>(12);
             byte[] rgb = new byte[3];

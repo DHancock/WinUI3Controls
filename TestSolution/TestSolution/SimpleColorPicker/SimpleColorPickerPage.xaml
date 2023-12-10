@@ -130,7 +130,7 @@
             <TextBlock x:Name="eventReceivedFeedback" Text="event received:" Grid.Row="8" Grid.Column="2" HorizontalAlignment="Left" Grid.ColumnSpan="2"/>
 
             <TextBlock Grid.Row="9" Text="IsFlyoutOpen property:"/>
-            <w3c:SimpleColorPicker x:Name="openPicker" Grid.Row="9" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}" IsMiniPalette="True"/>
+            <local:InheritedPicker x:Name="openPicker" Grid.Row="9" Grid.Column="1" Color="{x:Bind BC, Mode=TwoWay}"/>
             <CheckBox Content="Flyout open" IsChecked="{x:Bind openPicker.IsFlyoutOpen, Mode=TwoWay}" Grid.Row="9" Grid.Column="2"/>
 
             <TextBlock Grid.Row="10" Text="color property:"/>

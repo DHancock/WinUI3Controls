@@ -17,7 +17,6 @@
 
             <Style x:Key="exampleStyle" TargetType="w3c:GroupBox">
                 <Setter Property="BorderBrush" Value="{StaticResource brush}"/>
-                <Setter Property="BorderThickness" Value="2"/>
                 <Setter Property="CornerRadius" Value="8"/>
                 <Setter Property="HeadingMargin" Value="20"/>
                 <Setter Property="HeadingBaseLineRatio" Value="0.55"/>
@@ -49,9 +48,9 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <w3c:GroupBox x:Name="StyledGroupBox" Style="{StaticResource exampleStyle}" Grid.Row="1" Grid.Column="1">
+        <local:InheritedGroupBox x:Name="StyledGroupBox" Style="{StaticResource exampleStyle}" Grid.Row="1" Grid.Column="1">
             <ToggleSwitch x:Name="SettingsToggleSwitch" OffContent="Closed" OnContent="Open" IsOn="False"/>
-        </w3c:GroupBox>
+        </local:InheritedGroupBox>
     </Grid>
 </Page>
 
