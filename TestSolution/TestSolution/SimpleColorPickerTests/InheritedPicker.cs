@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Windows.UI;
 
-namespace TestSolution.SimpleColorPicker
+namespace TestSolution.SimpleColorPickerTests
 {
     internal class InheritedPicker : AssyntSoftware.WinUI3Controls.SimpleColorPicker
     {

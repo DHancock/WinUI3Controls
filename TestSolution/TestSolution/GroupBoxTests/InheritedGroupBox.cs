@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestSolution.GroupBox
+namespace TestSolution.GroupBoxTests
 {
     internal class InheritedGroupBox : AssyntSoftware.WinUI3Controls.GroupBox
     {
