@@ -8,10 +8,7 @@ using Windows.Foundation;
 
 namespace AssyntSoftware.WinUI3Controls
 {
-    [TemplatePart(Name = "PART_BorderPath", Type = typeof(Path))]
-    [TemplatePart(Name = "PART_HeadingPresenter", Type = typeof(ContentPresenter))]
-    [TemplatePart(Name = "PART_ChildPresenter", Type = typeof(ContentPresenter))]
-    public sealed partial class GroupBox : ContentControl
+    public class GroupBox : ContentControl
     {
         private ContentPresenter? HeadingPresenter { get; set; }
         private ContentPresenter? ChildPresenter { get; set; }

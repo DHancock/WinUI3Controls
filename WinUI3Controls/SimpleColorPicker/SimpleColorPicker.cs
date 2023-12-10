@@ -18,7 +18,7 @@ using Windows.UI.Core;
 
 namespace AssyntSoftware.WinUI3Controls
 {
-    public sealed class SimpleColorPicker : Control
+    public class SimpleColorPicker : Control
     {
         private const int cDefaultSamplesPerColor = 10;  // the number of shades of a color in the default palettes
 
