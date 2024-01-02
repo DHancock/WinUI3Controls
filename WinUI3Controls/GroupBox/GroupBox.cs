@@ -37,16 +37,14 @@ namespace AssyntSoftware.WinUI3Controls
             RegisterPropertyChangedCallback(CornerRadiusProperty, (s, d) => ((GroupBox)s).BorderPropertyChanged());
             RegisterPropertyChangedCallback(BorderThicknessProperty, (s, d) => ((GroupBox)s).BorderPropertyChanged());
 
-            HeadingPresenter.SizeChanged += (s, e) =>
-            {
-                if (IsLoaded)
-                    BorderPropertyChanged();
-            };
+            HeadingPresenter.SizeChanged += (s, e) => BorderPropertyChanged();
 
             SizeChanged += (s, e) => ((GroupBox)s).RedrawBorder();
 
+            Loaded += (s, e) => ((GroupBox)s).RedrawBorder();
+
             // initialise
-            Loaded += (s, e) => BorderPropertyChanged();
+            BorderPropertyChanged();
         }
 
         private void RedrawBorder()
