@@ -50,6 +50,7 @@ Further examples can be found in the [TestSolution](TestSolution)
 
 |Version|Changes|
 |-------|:------|
+|2.2.1|Improve the GroupBox layout code.|
 |2.2.0|Unseal the GroupBox and SimpleColorPicker classes.|
 |2.1.1|Fixes to the simple color picker control.|
 |2.1.0|Add simple color picker control.|
