@@ -8,7 +8,7 @@ using Windows.Foundation;
 
 namespace AssyntSoftware.WinUI3Controls
 {
-    public class GroupBox : ContentControl
+    public partial class GroupBox : ContentControl
     {
         private ContentPresenter? HeadingPresenter { get; set; }
         private ContentPresenter? ChildPresenter { get; set; }
@@ -292,7 +292,7 @@ namespace AssyntSoftware.WinUI3Controls
         }
     }
 
-    public class GroupBoxAutomationPeer : FrameworkElementAutomationPeer
+    public partial class GroupBoxAutomationPeer : FrameworkElementAutomationPeer
     {
         public GroupBoxAutomationPeer(GroupBox control) : base(control)
         {
