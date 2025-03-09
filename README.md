@@ -8,9 +8,7 @@ The library is available as a [NuGet package](https://www.nuget.org/packages/Ass
 
 ![xwz2](https://github.com/DHancock/WinUI3Controls/assets/28826959/7122c0d9-9776-436a-bc77-f0b41ae679c4)
 
-<details>
-
-<summary>Source...</summary>
+Xaml:
 
 ```xaml
 
@@ -35,14 +33,10 @@ The library is available as a [NuGet package](https://www.nuget.org/packages/Ass
         </w3c:GroupBox>
 
         <w3c:SimpleColorPicker Grid.Row="1" IsMiniPalette="True" Color="{x:Bind ChosenColor, Mode=TwoWay}"/>
-
     </Grid>
 </Page>
 
 ```
-
-</details>
-
 
 Further examples can be found in the [TestSolution](TestSolution)
 
@@ -50,6 +44,7 @@ Further examples can be found in the [TestSolution](TestSolution)
 
 |Version|Changes|
 |-------|:------|
+|2.3.0|Add trimming support.|
 |2.2.1|Improve the GroupBox layout code.|
 |2.2.0|Unseal the GroupBox and SimpleColorPicker classes.|
 |2.1.1|Fixes to the simple color picker control.|
