@@ -8,7 +8,7 @@ using Windows.UI;
 
 namespace TestSolution.SimpleColorPickerTests
 {
-    internal class InheritedPicker : AssyntSoftware.WinUI3Controls.SimpleColorPicker
+    internal partial class InheritedPicker : AssyntSoftware.WinUI3Controls.SimpleColorPicker
     {
         public InheritedPicker() : base()
         {

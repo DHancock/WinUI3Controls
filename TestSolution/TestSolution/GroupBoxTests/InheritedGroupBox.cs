@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestSolution.GroupBoxTests
 {
-    internal class InheritedGroupBox : AssyntSoftware.WinUI3Controls.GroupBox
+    internal partial class InheritedGroupBox : AssyntSoftware.WinUI3Controls.GroupBox
     {
         public InheritedGroupBox() : base()
         {

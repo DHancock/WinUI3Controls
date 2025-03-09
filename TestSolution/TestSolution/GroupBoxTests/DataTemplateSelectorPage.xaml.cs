@@ -33,7 +33,7 @@ namespace TestSolution.GroupBoxTests
     }
 
 
-    public class FruitTemplateSelector : DataTemplateSelector
+    public partial class FruitTemplateSelector : DataTemplateSelector
     {
         public DataTemplate? AppleTemplate { get; set; }
         public DataTemplate? OrangeTemplate { get; set; }
