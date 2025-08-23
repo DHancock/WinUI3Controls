@@ -7,7 +7,6 @@ It contains two controls, a WinUI implementation of the **WPF GroupBox** control
 The library supports trimming which requires at least:
 
 - Net 6.0
-- Windows App Sdk 1.6.0
-- CsWinRt 2.2.0
+- Windows App Sdk 1.7.0
 
 For more information, including code samples see the home [repository](https://github.com/DHancock/WinUI3Controls/tree/main).

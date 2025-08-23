@@ -17,9 +17,10 @@ Built for use with the Windows App SDK.</Description>
     <RepositoryUrl>https://github.com/DHancock/WinUI3Controls</RepositoryUrl>
     <Authors>David Hancock</Authors>
     <PackageProjectUrl>https://github.com/DHancock/WinUI3Controls</PackageProjectUrl>
-    <Version>2.3.0</Version>
+    <Version>2.3.1</Version>
 	<IsTrimmable>True</IsTrimmable>
 	<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
+	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -38,8 +39,7 @@ Built for use with the Windows App SDK.</Description>
 	
   <ItemGroup>
       <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-      <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.2.0" />
-      <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240829007" />
+      <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
   </ItemGroup>
 
   <ItemGroup>
