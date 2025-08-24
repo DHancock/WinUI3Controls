@@ -44,6 +44,7 @@ Further examples can be found in the [TestSolution](TestSolution)
 
 |Version|Changes|
 |-------|:------|
+|2.3.1|Fix builds when including version 2.3.0 in projects targeting WinAppSdk 1.8.0 preview (see [#55](https://github.com/DHancock/WinUI3Controls/pull/55))| 
 |2.3.0|Add trimming support.|
 |2.2.1|Improve the GroupBox layout code.|
 |2.2.0|Unseal the GroupBox and SimpleColorPicker classes.|
