@@ -44,6 +44,7 @@ Further examples can be found in the [TestSolution](TestSolution)
 
 |Version|Changes|
 |-------|:------|
+|2.4.0|Use the minimum dependency from the WinAppSdk metapackage and update to .Net 8.0 |
 |2.3.1|Fix builds when including version 2.3.0 in projects targeting WinAppSdk 1.8.0 [#55](https://github.com/DHancock/WinUI3Controls/pull/55)| 
 |2.3.0|Add trimming support.|
 |2.2.1|Improve the GroupBox layout code.|
