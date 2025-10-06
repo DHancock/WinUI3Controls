@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>AssyntSoftware.WinUI3Controls</RootNamespace>
     <Nullable>enable</Nullable>
@@ -17,7 +17,7 @@ Built for use with the Windows App SDK.</Description>
     <RepositoryUrl>https://github.com/DHancock/WinUI3Controls</RepositoryUrl>
     <Authors>David Hancock</Authors>
     <PackageProjectUrl>https://github.com/DHancock/WinUI3Controls</PackageProjectUrl>
-    <Version>2.3.1</Version>
+    <Version>2.4.0</Version>
 	<IsTrimmable>True</IsTrimmable>
 	<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
 	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -39,8 +39,8 @@ Built for use with the Windows App SDK.</Description>
 	
   <ItemGroup>
       <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-      <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
-  </ItemGroup>
+	  <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="1.8.250906003" />
+</ItemGroup>
 
   <ItemGroup>
     <Page Update="Themes\Generic.xaml">
