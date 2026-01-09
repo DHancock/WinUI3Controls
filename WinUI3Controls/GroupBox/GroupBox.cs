@@ -101,16 +101,22 @@ namespace AssyntSoftware.WinUI3Controls
         }
 
 
+        // cZeroWidthString is used to ensure that the Heading content presenter's content can't be null when set or omitted in xaml.
+        // Otherwise an argument exception would be thrown by WinUi's layout code, which can't be caught.
+        // While it's likely to be a WinUi bug in WAS1.8, this work around is for convenience.
+
+        private const string cZeroWidthString = "\u2060"; // word joiner, a zero width non-breaking space
+
         public static readonly DependencyProperty HeadingProperty =
             DependencyProperty.Register(nameof(Heading),
                 typeof(object),
                 typeof(GroupBox),
-                new PropertyMetadata(null));
+                new PropertyMetadata(cZeroWidthString));
 
         public object Heading
         {
             get { return GetValue(HeadingProperty); }
-            set { SetValue(HeadingProperty, value); }
+            set { SetValue(HeadingProperty, value ?? cZeroWidthString); }
         }
 
 
