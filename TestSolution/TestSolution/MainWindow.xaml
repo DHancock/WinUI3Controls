@@ -28,6 +28,7 @@
                     <NavigationViewItem Content="Properties" Tag="GroupBoxTests.PropertiesPage" AccessKey="P" KeyTipPlacementMode="Bottom"/>
                     <NavigationViewItem Content="Style" Tag="GroupBoxTests.StylePage" AccessKey="S" KeyTipPlacementMode="Bottom"/>
                     <NavigationViewItem Content="DataTemplateSelector" Tag="GroupBoxTests.DataTemplateSelectorPage" AccessKey="D" KeyTipPlacementMode="Bottom"/>
+                    <NavigationViewItem Content="NullContentPresenters" Tag="GroupBoxTests.NullContentPresenterPage" AccessKey="N" KeyTipPlacementMode="Bottom"/>
                 </NavigationViewItem.MenuItems>
             </NavigationViewItem>
             <NavigationViewItem Content="Simple Color Picker" Tag="SimpleColorPickerTests.SimpleColorPickerPage" AccessKey="I" KeyTipPlacementMode="Bottom">
