@@ -1,0 +1,24 @@
+﻿<Page
+    x:Class="TestSolution.GroupBoxTests.NullContentPresenterPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TestSolution.GroupBoxTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:w3c="using:AssyntSoftware.WinUI3Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    NavigationCacheMode="Required">
+
+    <Grid RowDefinitions="*,*,*,*,*" ColumnDefinitions="*,*,*">
+        <Grid.Resources>
+            <Style TargetType="w3c:GroupBox">
+                <Setter Property="BorderStartPadding" Value="0"/>
+                <Setter Property="BorderEndPadding" Value="0"/>
+            </Style>
+        </Grid.Resources>
+
+        <w3c:GroupBox Grid.Row="1" Grid.Column="1"/>
+        <w3c:GroupBox Heading="{x:Null}" Content="{x:Null}" Grid.Row="3" Grid.Column="1" />
+    </Grid>
+</Page>
