@@ -10,7 +10,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     NavigationCacheMode="Required">
 
-    <Grid RowDefinitions="*,*,*,*,*" ColumnDefinitions="*,*,*">
+    <Grid RowDefinitions="*,*,*,*,*,*,*" ColumnDefinitions="*,*,*">
         <Grid.Resources>
             <Style TargetType="w3c:GroupBox">
                 <Setter Property="BorderStartPadding" Value="0"/>
@@ -19,6 +19,7 @@
         </Grid.Resources>
 
         <w3c:GroupBox Grid.Row="1" Grid.Column="1"/>
-        <w3c:GroupBox Heading="{x:Null}" Content="{x:Null}" Grid.Row="3" Grid.Column="1" />
+        <w3c:GroupBox Grid.Row="3" Grid.Column="1"/> <!-- check that sharing the default value is ok -->
+        <w3c:GroupBox Heading="{x:Null}" Content="{x:Null}" Grid.Row="5" Grid.Column="1" />
     </Grid>
 </Page>
