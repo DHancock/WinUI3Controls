@@ -17,7 +17,7 @@ Built for use with the Windows App SDK.</Description>
     <RepositoryUrl>https://github.com/DHancock/WinUI3Controls</RepositoryUrl>
     <Authors>David Hancock</Authors>
     <PackageProjectUrl>https://github.com/DHancock/WinUI3Controls</PackageProjectUrl>
-    <Version>2.4.0</Version>
+    <Version>2.4.1</Version>
 	<IsTrimmable>True</IsTrimmable>
 	<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
 	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
