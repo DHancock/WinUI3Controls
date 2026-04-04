@@ -16,6 +16,8 @@ using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
 
+using WinRT;
+
 namespace AssyntSoftware.WinUI3Controls
 {
     public partial class SimpleColorPicker : Control
@@ -43,42 +45,39 @@ namespace AssyntSoftware.WinUI3Controls
         {
             base.OnApplyTemplate();
 
-            pickButton = GetTemplateChild("PART_PickButton") as SplitButton;
-
-            if (pickButton is not null)
+            try
             {
+                pickButton = GetTemplateChild("PART_PickButton").As<SplitButton>();
+                indicatorBorder = pickButton.Content.As<Border>();
+                Flyout flyout = pickButton.Flyout.As<Flyout>();
+                grid = flyout.Content.As<Grid>();
+
                 pickButton.Click += PickButton_Click;
                 pickButton.PreviewKeyUp += PickButton_PreviewKeyUp;
 
-                indicatorBorder = pickButton.Content as Border;
+                indicatorBorder.Width = IndicatorWidth;
+                indicatorBorder.Background = new SolidColorBrush(Color);
 
-                if (indicatorBorder is not null)
-                {
-                    indicatorBorder.Width = IndicatorWidth;
-                    indicatorBorder.Background = new SolidColorBrush(Color);
-                }
+                flyout.Opening += Flyout_Opening;
+                flyout.Opened += Flyout_Opened;
+                flyout.Closed += Flyout_Closed;
 
-                if ((pickButton.Flyout is Flyout flyout) && (flyout.Content is Grid root))
-                {
-                    flyout.Opening += Flyout_Opening;
-                    flyout.Opened += Flyout_Opened;
-                    flyout.Closed += Flyout_Closed;
+                grid.IsTabStop = true;
+                grid.PreviewKeyDown += Grid_PreviewKeyDown;
+                grid.PreviewKeyUp += Grid_PreviewKeyUp;
+                grid.PointerExited += Grid_PointerExited;
 
-                    grid = root;
-                    grid.IsTabStop = true;
-                    grid.PreviewKeyDown += Grid_PreviewKeyDown;
-                    grid.PreviewKeyUp += Grid_PreviewKeyUp;
-                    grid.PointerExited += Grid_PointerExited;
+                // changing the constraint value after the flyout has been shown will throw an exception
+                flyout.ShouldConstrainToRootBounds = ShouldConstrainToRootBounds;
 
-                    // changing the constraint value after the flyout has been shown will throw an exception
-                    flyout.ShouldConstrainToRootBounds = ShouldConstrainToRootBounds;
+                if (FlyoutPresenterStyle is not null)
+                    flyout.FlyoutPresenterStyle = FlyoutPresenterStyle;
 
-                    if (FlyoutPresenterStyle is not null)
-                        flyout.FlyoutPresenterStyle = FlyoutPresenterStyle;
-
-                    if (IsFlyoutOpen)
-                        Loaded += SimpleColorPicker_Loaded;
-                }
+                if (IsFlyoutOpen)
+                    Loaded += SimpleColorPicker_Loaded;
+            }
+            catch (InvalidCastException)
+            {
             }
         }
 
@@ -258,6 +257,8 @@ namespace AssyntSoftware.WinUI3Controls
         private static void SimpleColorPicker_Loaded(object sender, RoutedEventArgs e)
         {
             SimpleColorPicker picker = (SimpleColorPicker)sender;
+            picker.Loaded -= SimpleColorPicker_Loaded;
+
             SetFlyoutOpenState(picker, picker.IsFlyoutOpen);
         }
 

@@ -1,10 +1,13 @@
 ﻿using System;
+
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
+
+using WinRT;
 
 namespace AssyntSoftware.WinUI3Controls
 {
@@ -23,28 +26,31 @@ namespace AssyntSoftware.WinUI3Controls
         {
             base.OnApplyTemplate();
 
-            HeadingPresenter = GetTemplateChild("PART_HeadingPresenter") as ContentPresenter;
-            ChildPresenter = GetTemplateChild("PART_ChildPresenter") as ContentPresenter;
-            BorderPath = GetTemplateChild("PART_BorderPath") as Path;
+            try
+            {
+                HeadingPresenter = GetTemplateChild("PART_HeadingPresenter").As<ContentPresenter>();
+                ChildPresenter = GetTemplateChild("PART_ChildPresenter").As<ContentPresenter>();
+                BorderPath = GetTemplateChild("PART_BorderPath").As<Path>();
 
-            if (HeadingPresenter is null || ChildPresenter is null || BorderPath is null)
-                return;
+                // offset the heading presenter from the control edge
+                HeadingPresenter.Margin = new Thickness(HeadingMargin, 0, 0, 0);
 
-            // offset the heading presenter from the control edge
-            HeadingPresenter.Margin = new Thickness(HeadingMargin, 0, 0, 0);
+                // reuse Control properties to define the group border
+                RegisterPropertyChangedCallback(CornerRadiusProperty, (s, d) => ((GroupBox)s).BorderPropertyChanged());
+                RegisterPropertyChangedCallback(BorderThicknessProperty, (s, d) => ((GroupBox)s).BorderPropertyChanged());
 
-            // reuse Control properties to define the group border
-            RegisterPropertyChangedCallback(CornerRadiusProperty, (s, d) => ((GroupBox)s).BorderPropertyChanged());
-            RegisterPropertyChangedCallback(BorderThicknessProperty, (s, d) => ((GroupBox)s).BorderPropertyChanged());
+                HeadingPresenter.SizeChanged += (s, e) => BorderPropertyChanged();
 
-            HeadingPresenter.SizeChanged += (s, e) => BorderPropertyChanged();
+                SizeChanged += (s, e) => ((GroupBox)s).RedrawBorder();
 
-            SizeChanged += (s, e) => ((GroupBox)s).RedrawBorder();
+                Loaded += (s, e) => ((GroupBox)s).RedrawBorder();
 
-            Loaded += (s, e) => ((GroupBox)s).RedrawBorder();
-
-            // initialise
-            BorderPropertyChanged();
+                // initialise
+                BorderPropertyChanged();
+            }
+            catch (InvalidCastException)
+            {
+            }
         }
 
         private void RedrawBorder()
