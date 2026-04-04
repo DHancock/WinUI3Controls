@@ -13,9 +13,9 @@ namespace AssyntSoftware.WinUI3Controls
 {
     public partial class GroupBox : ContentControl
     {
-        private ContentPresenter? HeadingPresenter { get; set; }
-        private ContentPresenter? ChildPresenter { get; set; }
-        private Path? BorderPath { get; set; }
+        private ContentPresenter? headingPresenter;
+        private ContentPresenter? childPresenter;
+        private Path? borderPath;
 
         public GroupBox()
         {
@@ -28,18 +28,18 @@ namespace AssyntSoftware.WinUI3Controls
 
             try
             {
-                HeadingPresenter = GetTemplateChild("PART_HeadingPresenter").As<ContentPresenter>();
-                ChildPresenter = GetTemplateChild("PART_ChildPresenter").As<ContentPresenter>();
-                BorderPath = GetTemplateChild("PART_BorderPath").As<Path>();
+                headingPresenter = GetTemplateChild("PART_HeadingPresenter").As<ContentPresenter>();
+                childPresenter = GetTemplateChild("PART_ChildPresenter").As<ContentPresenter>();
+                borderPath = GetTemplateChild("PART_BorderPath").As<Path>();
 
                 // offset the heading presenter from the control edge
-                HeadingPresenter.Margin = new Thickness(HeadingMargin, 0, 0, 0);
+                headingPresenter.Margin = new Thickness(HeadingMargin, 0, 0, 0);
 
                 // reuse Control properties to define the group border
                 RegisterPropertyChangedCallback(CornerRadiusProperty, (s, d) => ((GroupBox)s).BorderPropertyChanged());
                 RegisterPropertyChangedCallback(BorderThicknessProperty, (s, d) => ((GroupBox)s).BorderPropertyChanged());
 
-                HeadingPresenter.SizeChanged += (s, e) => BorderPropertyChanged();
+                headingPresenter.SizeChanged += (s, e) => BorderPropertyChanged();
 
                 SizeChanged += (s, e) => ((GroupBox)s).RedrawBorder();
 
@@ -61,17 +61,17 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void BorderPropertyChanged()
         {
-            if (ChildPresenter is null || BorderPath is null)
+            if (childPresenter is null || borderPath is null)
                 return;
 
             Thickness newPadding = CalculateContentPresenterPadding();
 
-            if (ChildPresenter.Padding != newPadding)
-                ChildPresenter.Padding = newPadding;
+            if (childPresenter.Padding != newPadding)
+                childPresenter.Padding = newPadding;
 
             // a non uniform border thickness isn't supported
-            if (BorderPath.StrokeThickness != BorderThickness.Left)
-                BorderPath.StrokeThickness = BorderThickness.Left;
+            if (borderPath.StrokeThickness != BorderThickness.Left)
+                borderPath.StrokeThickness = BorderThickness.Left;
 
             // it's difficult to tell if changing the child presenter padding would
             // cause a size changed event, so always redraw the border here
@@ -84,7 +84,7 @@ namespace AssyntSoftware.WinUI3Controls
             static double Max(double a, double b, double c) => Math.Max(Math.Max(a, b), c);
 
             double halfStrokeThickness = BorderThickness.Left / 2;
-            double headingHeight = (HeadingPresenter is null) ? 0.0 : HeadingPresenter.ActualHeight;
+            double headingHeight = (headingPresenter is null) ? 0.0 : headingPresenter.ActualHeight;
             double headingBaseLineRatio = Math.Clamp(HeadingBaseLineRatio, 0.0, 1.0);
 
             // if "borderOffset" is positive, the top border line extends below the top of the content presenter
@@ -185,9 +185,9 @@ namespace AssyntSoftware.WinUI3Controls
         {
             GroupBox gb = (GroupBox)d;
 
-            if (gb.HeadingPresenter is not null)
+            if (gb.headingPresenter is not null)
             {
-                gb.HeadingPresenter.Margin = new Thickness((double)e.NewValue, 0, 0, 0);
+                gb.headingPresenter.Margin = new Thickness((double)e.NewValue, 0, 0, 0);
                 gb.RedrawBorder();
             }
         }
@@ -226,7 +226,7 @@ namespace AssyntSoftware.WinUI3Controls
 
         private void CreateBorderRoundedRect()
         {
-            if (HeadingPresenter is null || BorderPath is null)
+            if (headingPresenter is null || borderPath is null)
                 return;
 
             static LineSegment LineTo(float x, float y) => new LineSegment() { Point = new Point(x, y), };
@@ -238,10 +238,10 @@ namespace AssyntSoftware.WinUI3Controls
             pathGeometry.Figures.Add(figure);
 
             float textLHS = (float)(HeadingMargin - BorderEndPadding);
-            float textRHS = (float)(HeadingMargin + HeadingPresenter.ActualWidth + BorderStartPadding);
+            float textRHS = (float)(HeadingMargin + headingPresenter.ActualWidth + BorderStartPadding);
 
-            float halfStrokeThickness = (float)(BorderPath.StrokeThickness * 0.5);
-            float headingCenter = (float)(HeadingPresenter.ActualHeight * Math.Clamp(HeadingBaseLineRatio, 0.0, 1.0));
+            float halfStrokeThickness = (float)(borderPath.StrokeThickness * 0.5);
+            float headingCenter = (float)(headingPresenter.ActualHeight * Math.Clamp(HeadingBaseLineRatio, 0.0, 1.0));
 
             // right hand side of text
             float radius = (float)CornerRadius.TopRight;
@@ -293,7 +293,7 @@ namespace AssyntSoftware.WinUI3Controls
                 figure.Segments.Add(LineTo(textLHS, headingCenter));
 
             // add the new path geometry in to the visual tree
-            BorderPath.Data = pathGeometry;
+            borderPath.Data = pathGeometry;
         }
 
         protected override AutomationPeer OnCreateAutomationPeer()
