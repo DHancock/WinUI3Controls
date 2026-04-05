@@ -38,12 +38,23 @@ namespace TestSolution
         {
             if (args.SelectedItem is NavigationViewItem item)
             {
-                Type? type = Type.GetType($"TestSolution.{item.Tag}");
+                Type? type = null;
+
+                switch (item.Tag)
+                {
+                    case "GroupBoxTests.PropertiesPage": type = Type.GetType("TestSolution.GroupBoxTests.PropertiesPage"); break;
+                    case "GroupBoxTests.StylePage": type = Type.GetType("TestSolution.GroupBoxTests.StylePage"); break;
+                    case "GroupBoxTests.DataTemplateSelectorPage": type = Type.GetType("TestSolution.GroupBoxTests.DataTemplateSelectorPage"); break;
+                    case "GroupBoxTests.NullContentPresenterPage": type = Type.GetType("TestSolution.GroupBoxTests.NullContentPresenterPage"); break;
+
+                    case "SimpleColorPickerTests.SimpleColorPickerPage": type = Type.GetType("TestSolution.SimpleColorPickerTests.SimpleColorPickerPage"); break;
+                }
 
                 if (type is not null)
+                {
                     _ = ContentFrame.NavigateToType(type, null, frameNavigationOptions);
+                }
             }
         }
     }
-
 }

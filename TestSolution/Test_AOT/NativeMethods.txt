@@ -1,7 +1,0 @@
-﻿GetDpiForWindow
-MINMAXINFO
-SetWindowSubclass
-DefSubclassProc
-WM_GETMINMAXINFO
-WM_DPICHANGED
-RemoveWindowSubclass
