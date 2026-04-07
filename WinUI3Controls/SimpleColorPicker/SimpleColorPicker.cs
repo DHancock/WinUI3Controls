@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 
@@ -45,13 +46,11 @@ namespace AssyntSoftware.WinUI3Controls
         {
             base.OnApplyTemplate();
 
-            try
+            if (TryAs<SplitButton>(GetTemplateChild("PART_PickButton"), out pickButton) &&
+                TryAs<Border>(pickButton.Content, out indicatorBorder) &&
+                TryAs<Flyout>(pickButton.Flyout, out Flyout? flyout) &&
+                TryAs<Grid>(flyout.Content, out grid))
             {
-                pickButton = GetTemplateChild("PART_PickButton").As<SplitButton>();
-                indicatorBorder = pickButton.Content.As<Border>();
-                Flyout flyout = pickButton.Flyout.As<Flyout>();
-                grid = flyout.Content.As<Grid>();
-
                 pickButton.Click += PickButton_Click;
                 pickButton.PreviewKeyUp += PickButton_PreviewKeyUp;
 
@@ -76,9 +75,21 @@ namespace AssyntSoftware.WinUI3Controls
                 if (IsFlyoutOpen)
                     Loaded += SimpleColorPicker_Loaded;
             }
-            catch (InvalidCastException)
+        }
+
+        private static bool TryAs<T>(object? source, [NotNullWhen(true)] out T? result) where T : class
+        {
+            try
+            {
+                result = source.As<T>();
+                return true;
+            }
+            catch
             {
             }
+
+            result = null;
+            return false;
         }
 
         private void Flyout_Opening(object? sender, object e)

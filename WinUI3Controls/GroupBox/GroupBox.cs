@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -26,12 +27,10 @@ namespace AssyntSoftware.WinUI3Controls
         {
             base.OnApplyTemplate();
 
-            try
+            if (TryAs<ContentPresenter>(GetTemplateChild("PART_HeadingPresenter"), out headingPresenter) &&
+                TryAs<ContentPresenter>(GetTemplateChild("PART_ChildPresenter"), out childPresenter) &&
+                TryAs<Path>(GetTemplateChild("PART_BorderPath"), out borderPath))
             {
-                headingPresenter = GetTemplateChild("PART_HeadingPresenter").As<ContentPresenter>();
-                childPresenter = GetTemplateChild("PART_ChildPresenter").As<ContentPresenter>();
-                borderPath = GetTemplateChild("PART_BorderPath").As<Path>();
-
                 // offset the heading presenter from the control edge
                 headingPresenter.Margin = new Thickness(HeadingMargin, 0, 0, 0);
 
@@ -48,9 +47,21 @@ namespace AssyntSoftware.WinUI3Controls
                 // initialise
                 BorderPropertyChanged();
             }
-            catch (InvalidCastException)
+        }
+
+        private static bool TryAs<T>(object? source, [NotNullWhen(true)] out T? result) where T : class
+        {
+            try
+            {
+                result = source.As<T>();
+                return true;
+            }
+            catch
             {
             }
+
+            result = null;
+            return false;
         }
 
         private void RedrawBorder()
