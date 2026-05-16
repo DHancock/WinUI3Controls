@@ -1,4 +1,4 @@
-using Microsoft.UI.Input;
+﻿using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -70,10 +70,14 @@ namespace AssyntSoftware.WinUI3Controls
                 flyout.ShouldConstrainToRootBounds = ShouldConstrainToRootBounds;
 
                 if (FlyoutPresenterStyle is not null)
+                {
                     flyout.FlyoutPresenterStyle = FlyoutPresenterStyle;
+                }
 
                 if (IsFlyoutOpen)
+                {
                     Loaded += SimpleColorPicker_Loaded;
+                }
             }
         }
 
@@ -101,9 +105,13 @@ namespace AssyntSoftware.WinUI3Controls
             if (grid.Children.Count == 0)
             {
                 if (IsCustomPalette)
+                {
                     CreateCustomPaletteGrid();
+                }
                 else
+                {
                     CreateDefaultPaletteGrid();
+                }
             }
 
             // open immediately, allowing for the preferred placement to be specified
@@ -150,7 +158,9 @@ namespace AssyntSoftware.WinUI3Controls
         private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             if (selected is not null)
+            {
                 ResetZoom(selected);
+            }
 
             e.Handled = true;
         }
@@ -175,16 +185,24 @@ namespace AssyntSoftware.WinUI3Controls
                         if (shift)
                         {
                             if (selected is null)
+                            {
                                 newSelection = grid.Children[grid.Children.Count - 1] as Border;
+                            }
                             else
+                            {
                                 key = VirtualKey.Left;
+                            }
                         }
                         else
                         {
                             if (selected is null)
+                            {
                                 newSelection = grid.Children[0] as Border;
+                            }
                             else
+                            {
                                 key = VirtualKey.Right;
+                            }
                         }
                     }
                     else if ((key == VirtualKey.Right) && (FlowDirection == FlowDirection.RightToLeft))
@@ -229,7 +247,9 @@ namespace AssyntSoftware.WinUI3Controls
                     if (newSelection is not null)
                     {
                         if (selected is not null)
+                        {
                             ResetZoom(selected);
+                        }
 
                         selected = newSelection;
                         ZoomOut(newSelection);
@@ -293,7 +313,9 @@ namespace AssyntSoftware.WinUI3Controls
             Color color = (Color)e.NewValue;
 
             if (picker.indicatorBorder is not null)
+            {
                 picker.indicatorBorder.Background = new SolidColorBrush(color);
+            }
 
             picker.ColorChanged?.Invoke(picker, color);
         }
@@ -340,13 +362,19 @@ namespace AssyntSoftware.WinUI3Controls
                     if (!flyout.IsOpen)
                     {
                         if (picker.FlowDirection == FlowDirection.LeftToRight)
+                        {
                             flyout.ShowAt(picker.pickButton, new FlyoutShowOptions() { Placement = FlyoutPlacementMode.BottomEdgeAlignedLeft });
+                        }
                         else
+                        {
                             flyout.ShowAt(picker.pickButton, new FlyoutShowOptions() { Placement = FlyoutPlacementMode.BottomEdgeAlignedRight });
+                        }
                     }
                 }
                 else if (flyout.IsOpen)
+                {
                     flyout.Hide();
+                }
             }
         }
 
@@ -458,7 +486,9 @@ namespace AssyntSoftware.WinUI3Controls
             int columns = (total / CellsPerColumn) + ((total % CellsPerColumn) > 0 ? 1 : 0);
 
             if (PaletteOrientation == Orientation.Vertical)
+            {
                 (rows, columns) = (columns, rows);
+            }
 
             SetGridColumnRowDefinitions(columns, rows);
 
@@ -517,7 +547,9 @@ namespace AssyntSoftware.WinUI3Controls
             }
 
             if (PaletteOrientation == Orientation.Vertical)
+            {
                 (rows, columns) = (columns, rows);
+            }
 
             SetGridColumnRowDefinitions(columns, rows);
 
@@ -528,9 +560,13 @@ namespace AssyntSoftware.WinUI3Controls
                     int colorIndex;
 
                     if (IsMiniPalette)
+                    {
                         colorIndex = PaletteOrientation == Orientation.Horizontal ? sMiniPaletteColumnOffsets[x] + y : sMiniPaletteColumnOffsets[y] + x;
+                    }
                     else
+                    {
                         colorIndex = PaletteOrientation == Orientation.Horizontal ? (x * cDefaultSamplesPerColor) + y : (y * cDefaultSamplesPerColor) + x;
+                    }
 
                     grid.Children.Add(CreateBorder(x, y, sRGB[colorIndex]));
                 }
@@ -548,7 +584,9 @@ namespace AssyntSoftware.WinUI3Controls
             border.PointerReleased += Border_PointReleased;
 
             if (CellStyle is not null)
+            {
                 border.Style = CellStyle;
+            }
 
             Grid.SetRow(border, y);
             Grid.SetColumn(border, x);
@@ -562,12 +600,16 @@ namespace AssyntSoftware.WinUI3Controls
             Debug.Assert(selected is null);
 
             if (InitialSelectionMode == InitialSelection.None)
+            {
                 return;
+            }
 
             if (InitialSelectionMode == InitialSelection.First)
             {
                 if (grid.Children.Count > 0)
+                {
                     selected = grid.Children[0] as Border;
+                }
             }
             else
             {
@@ -600,13 +642,19 @@ namespace AssyntSoftware.WinUI3Controls
                 }
 
                 if (exactMatch is not null)
+                {
                     selected = exactMatch;
+                }
                 else if (InitialSelectionMode == InitialSelection.ClosestMatch)
+                {
                     selected = closestMatch;
+                }
             }
 
             if (selected is not null)
+            {
                 ZoomOut(selected);
+            }
         }
 
         public Style? CellStyle
@@ -615,7 +663,9 @@ namespace AssyntSoftware.WinUI3Controls
             set
             {
                 if ((value is not null) && (value.TargetType == typeof(Border)))
+                {
                     cellStyle = value;
+                }
             }
         }
 
@@ -625,7 +675,9 @@ namespace AssyntSoftware.WinUI3Controls
             set
             {
                 if ((value is not null) && (value.TargetType == typeof(FlyoutPresenter)))
+                {
                     flyoutPresenterStyle = value;
+                }
             }
         }
 
@@ -645,12 +697,16 @@ namespace AssyntSoftware.WinUI3Controls
         private void Border_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             if (e.IsGenerated)
+            {
                 return;
+            }
 
             Border border = (Border)sender;
 
             if (selected is not null)
+            {
                 ResetZoom(selected);
+            }
 
             selected = border;
             ZoomOut(border);
@@ -671,7 +727,9 @@ namespace AssyntSoftware.WinUI3Controls
             Color newColor = ((SolidColorBrush)border.Background).Color;
 
             if (newColor != Color)
+            {
                 Color = newColor;
+            }
         }
 
         private record Pos(int X, int Y)   // record structs are in language version 10.0
@@ -695,18 +753,26 @@ namespace AssyntSoftware.WinUI3Controls
             int yCount = grid.RowDefinitions.Count;
 
             if ((pos.X < 0) || (pos.Y < 0) || (pos.X >= xCount) || (pos.Y >= yCount))
+            {
                 return false;
+            }
 
             if ((pos.X < (xCount - 1)) && (pos.Y < (yCount - 1))) // the last row or column could be partially filled
+            {
                 return true;
+            }
 
             Pos last = Last();
 
             if ((pos.X == (xCount - 1)) && (pos.Y > last.Y))
+            {
                 return false;
+            }
 
             if ((pos.Y == (yCount - 1)) && (pos.X > last.X))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -720,10 +786,14 @@ namespace AssyntSoftware.WinUI3Controls
             int yCount = grid.RowDefinitions.Count;
 
             if ((xCount * yCount) == childCount)
+            {
                 return new Pos(xCount - 1, yCount - 1);
+            }
 
             if (PaletteOrientation == Orientation.Horizontal)
+            {
                 return new Pos(xCount - 1, (childCount - 1) % yCount);
+            }
 
             return new Pos((childCount - 1) % xCount, yCount - 1);
         }
@@ -738,19 +808,25 @@ namespace AssyntSoftware.WinUI3Controls
             Pos newPos = currentPos.NextLeft();
 
             if (IsInsideGrid(newPos))
+            {
                 return newPos;
+            }
 
             newPos = newPos.GoToEndOfPreviousRow(xCount);
 
             if (IsInsideGrid(newPos))
+            {
                 return newPos;
+            }
 
             if (newPos.Y > 0)  // valid row but a partial column
             {
                 newPos = newPos.NextLeft();
 
                 if (IsInsideGrid(newPos))
+                {
                     return newPos;
+                }
             }
 
             // roll back over to the end
@@ -759,7 +835,9 @@ namespace AssyntSoftware.WinUI3Controls
                 newPos = new Pos(xCount - 1, yCount - 1); // bottom right corner
 
                 if (IsInsideGrid(newPos))
+                {
                     return newPos;
+                }
 
                 return newPos.NextLeft();
             }
@@ -772,12 +850,16 @@ namespace AssyntSoftware.WinUI3Controls
             Pos newPos = currentPos.NextRight();
 
             if (IsInsideGrid(newPos))
+            {
                 return newPos;
+            }
 
             newPos = newPos.GoToStartOfNextRow();
 
             if (IsInsideGrid(newPos))
+            {
                 return newPos;
+            }
 
             return new Pos(0, 0); // roll over to the start
         }
@@ -793,21 +875,29 @@ namespace AssyntSoftware.WinUI3Controls
             Pos newPos = currentPos.NextUp();
 
             if (IsInsideGrid(newPos))
+            {
                 return newPos;
+            }
 
             newPos = currentPos.GoToEndOfPreviousColumn(yCount);
 
             if (IsInsideGrid(newPos))
+            {
                 return newPos;
+            }
 
             newPos = newPos.NextUp();
 
             if (IsInsideGrid(newPos))
+            {
                 return newPos;
+            }
 
             // roll over to end
             if (PaletteOrientation == Orientation.Horizontal)
+            {
                 return Last();
+            }
 
             return new Pos(xCount - 1, (childCount / xCount) - 1); // last cell in the right most column
         }
@@ -817,12 +907,16 @@ namespace AssyntSoftware.WinUI3Controls
             Pos newPos = currentPos.NextDown();
 
             if (IsInsideGrid(newPos))
+            {
                 return newPos;
+            }
 
             newPos = currentPos.GoToStartOfNextColumn();
 
             if (IsInsideGrid(newPos))
+            {
                 return newPos;
+            }
 
             return new Pos(0, 0);
         }
