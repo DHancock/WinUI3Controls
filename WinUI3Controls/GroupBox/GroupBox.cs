@@ -67,22 +67,30 @@ namespace AssyntSoftware.WinUI3Controls
         private void RedrawBorder()
         {
             if (IsLoaded)
+            {
                 CreateBorderRoundedRect();
+            }
         }
 
         private void BorderPropertyChanged()
         {
             if (childPresenter is null || borderPath is null)
+            {
                 return;
+            }
 
             Thickness newPadding = CalculateContentPresenterPadding();
 
             if (childPresenter.Padding != newPadding)
+            {
                 childPresenter.Padding = newPadding;
+            }
 
             // a non uniform border thickness isn't supported
             if (borderPath.StrokeThickness != BorderThickness.Left)
+            {
                 borderPath.StrokeThickness = BorderThickness.Left;
+            }
 
             // it's difficult to tell if changing the child presenter padding would
             // cause a size changed event, so always redraw the border here
@@ -104,10 +112,14 @@ namespace AssyntSoftware.WinUI3Controls
             double topPadding = cornerAdjustment + borderOffset;
 
             if (topPadding < borderOffset)  // top padding cannot be less that the bottom of the border 
+            {
                 topPadding = borderOffset;
+            }
 
             if (topPadding < 0) // the content cannot be outside of the content presenter (even if that's a valid operation)
+            {
                 topPadding = 0;
+            }
 
             // a non uniform corner radius is unlikely, but possible
             // a non uniform border thickness isn't supported
@@ -238,7 +250,9 @@ namespace AssyntSoftware.WinUI3Controls
         private void CreateBorderRoundedRect()
         {
             if (headingPresenter is null || borderPath is null)
+            {
                 return;
+            }
 
             static LineSegment LineTo(float x, float y) => new LineSegment() { Point = new Point(x, y), };
             static ArcSegment ArcTo(Point end, float radius) => new ArcSegment() { Point = end, RotationAngle = 90.0, IsLargeArc = false, Size = new Size(radius, radius), SweepDirection = SweepDirection.Clockwise };
@@ -264,7 +278,9 @@ namespace AssyntSoftware.WinUI3Controls
                 figure.Segments.Add(LineTo(xArcStart, headingCenter));
             }
             else
+            {
                 figure.StartPoint = new Point(xArcStart, headingCenter);
+            }
 
             if (radius > 0) // top right corner
             {
@@ -301,7 +317,9 @@ namespace AssyntSoftware.WinUI3Controls
 
             // check if the last line is required, the arc may be too large
             if (radius + halfStrokeThickness < textLHS)
+            {
                 figure.Segments.Add(LineTo(textLHS, headingCenter));
+            }
 
             // add the new path geometry in to the visual tree
             borderPath.Data = pathGeometry;
@@ -332,7 +350,9 @@ namespace AssyntSoftware.WinUI3Controls
         protected override string GetNameCore()
         {
             if (((GroupBox)Owner).Heading is string str)
+            {
                 return str;
+            }
 
             return base.GetNameCore();
         }
