@@ -205,6 +205,10 @@ namespace AssyntSoftware.WinUI3Controls
                             }
                         }
                     }
+                    else if ((selected is null) && ((key == VirtualKey.Up) || (key == VirtualKey.Down) || (key == VirtualKey.Left) || (key == VirtualKey.Right)))
+                    {
+                        newSelection = grid.Children[0] as Border;
+                    }
                     else if ((key == VirtualKey.Right) && (FlowDirection == FlowDirection.RightToLeft))
                     {
                         key = VirtualKey.Left;
