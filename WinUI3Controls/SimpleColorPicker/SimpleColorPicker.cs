@@ -205,6 +205,10 @@ namespace AssyntSoftware.WinUI3Controls
                             }
                         }
                     }
+                    else if ((selected is null) && ((key == VirtualKey.Up) || (key == VirtualKey.Down) || (key == VirtualKey.Left) || (key == VirtualKey.Right)))
+                    {
+                        newSelection = grid.Children[0] as Border;
+                    }
                     else if ((key == VirtualKey.Right) && (FlowDirection == FlowDirection.RightToLeft))
                     {
                         key = VirtualKey.Left;
@@ -515,7 +519,9 @@ namespace AssyntSoftware.WinUI3Controls
                 grid.RowDefinitions.Clear();
 
                 while (rows-- > 0)
+                {
                     grid.RowDefinitions.Add(new RowDefinition());
+                }
             }
 
             if (grid.ColumnDefinitions.Count != columns)
@@ -523,7 +529,9 @@ namespace AssyntSoftware.WinUI3Controls
                 grid.ColumnDefinitions.Clear();
 
                 while (columns-- > 0)
+                {
                     grid.ColumnDefinitions.Add(new ColumnDefinition());
+                }
             }
         }
 
