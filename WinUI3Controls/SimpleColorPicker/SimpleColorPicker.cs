@@ -515,7 +515,9 @@ namespace AssyntSoftware.WinUI3Controls
                 grid.RowDefinitions.Clear();
 
                 while (rows-- > 0)
+                {
                     grid.RowDefinitions.Add(new RowDefinition());
+                }
             }
 
             if (grid.ColumnDefinitions.Count != columns)
@@ -523,7 +525,9 @@ namespace AssyntSoftware.WinUI3Controls
                 grid.ColumnDefinitions.Clear();
 
                 while (columns-- > 0)
+                {
                     grid.ColumnDefinitions.Add(new ColumnDefinition());
+                }
             }
         }
 
