@@ -169,94 +169,101 @@ namespace AssyntSoftware.WinUI3Controls
         {
             Grid grid = (Grid)sender;
 
-            if ((e.Key == VirtualKey.Tab) || (e.Key == VirtualKey.Up) || (e.Key == VirtualKey.Down) || (e.Key == VirtualKey.Left) || (e.Key == VirtualKey.Right))
+            if (grid.Children.Count > 0)
             {
-                if ((DateTime.UtcNow - lastKeyRepeat) > TimeSpan.FromMilliseconds(100)) // throttle changes
+                Debug.Assert(grid.Children.All(child => child is Border));
+
+                bool isTabKey = e.Key is VirtualKey.Tab;
+                bool isArrowKey = e.Key is VirtualKey.Up or VirtualKey.Down or VirtualKey.Left or VirtualKey.Right;
+
+                if (isTabKey || isArrowKey)
                 {
-                    lastKeyRepeat = DateTime.UtcNow;
-
-                    Border? newSelection = null;
-                    VirtualKey key = e.Key;
-
-                    if (key == VirtualKey.Tab)
+                    if ((DateTime.UtcNow - lastKeyRepeat) > TimeSpan.FromMilliseconds(100)) // throttle changes
                     {
-                        bool shift = (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+                        lastKeyRepeat = DateTime.UtcNow;
 
-                        if (shift)
+                        Border? newSelection = null;
+                        VirtualKey key = e.Key;
+
+                        if (isTabKey)
                         {
-                            if (selected is null)
+                            bool isShiftKey = (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+
+                            if (isShiftKey)
                             {
-                                newSelection = grid.Children[grid.Children.Count - 1] as Border;
+                                if (selected is null)
+                                {
+                                    newSelection = (Border)grid.Children[grid.Children.Count - 1];
+                                }
+                                else
+                                {
+                                    key = VirtualKey.Left;
+                                }
                             }
                             else
                             {
-                                key = VirtualKey.Left;
+                                if (selected is null)
+                                {
+                                    newSelection = (Border)grid.Children[0];
+                                }
+                                else
+                                {
+                                    key = VirtualKey.Right;
+                                }
                             }
                         }
-                        else
+                        else if (isArrowKey && (selected is null))
                         {
-                            if (selected is null)
+                            newSelection = (Border)grid.Children[0];
+                        }
+                        else if ((key is VirtualKey.Right) && (FlowDirection is FlowDirection.RightToLeft))
+                        {
+                            key = VirtualKey.Left;
+                        }
+                        else if ((key is VirtualKey.Left) && (FlowDirection is FlowDirection.RightToLeft))
+                        {
+                            key = VirtualKey.Right;
+                        }
+
+                        if ((newSelection is null) && (selected is not null))
+                        {
+                            Pos pos = new Pos(Grid.GetColumn(selected), Grid.GetRow(selected));
+                            Pos newPos;
+
+                            switch (key)
                             {
-                                newSelection = grid.Children[0] as Border;
+                                case VirtualKey.Up: newPos = MoveUp(pos); break;
+                                case VirtualKey.Down: newPos = MoveDown(pos); break;
+                                case VirtualKey.Left: newPos = MoveLeft(pos); break;
+                                case VirtualKey.Right: newPos = MoveRight(pos); break;
+                                default: Debug.Fail(key.ToString()); return;
                             }
-                            else
+
+                            int index = (grid.ColumnDefinitions.Count * newPos.Y) + newPos.X;
+
+                            if (PaletteOrientation is Orientation.Horizontal) // the last column may be incomplete
                             {
-                                key = VirtualKey.Right;
+                                Pos last = Last();
+                                // adjust index by the number of empty column positions above this row
+                                index -= Math.Max(0, newPos.Y - (last.Y + 1));
                             }
+
+                            newSelection = (Border)grid.Children[index];
+
+                            Debug.Assert(newPos.X == Grid.GetColumn(newSelection));
+                            Debug.Assert(newPos.Y == Grid.GetRow(newSelection));
                         }
-                    }
-                    else if ((selected is null) && ((key == VirtualKey.Up) || (key == VirtualKey.Down) || (key == VirtualKey.Left) || (key == VirtualKey.Right)))
-                    {
-                        newSelection = grid.Children[0] as Border;
-                    }
-                    else if ((key == VirtualKey.Right) && (FlowDirection == FlowDirection.RightToLeft))
-                    {
-                        key = VirtualKey.Left;
-                    }
-                    else if ((key == VirtualKey.Left) && (FlowDirection == FlowDirection.RightToLeft))
-                    {
-                        key = VirtualKey.Right;
-                    }
 
-                    if ((newSelection is null) && (selected is not null))
-                    {
-                        Pos pos = new Pos(Grid.GetColumn(selected), Grid.GetRow(selected));
-                        Pos newPos;
-
-                        switch (key)
+                        if (newSelection is not null)
                         {
-                            case VirtualKey.Up: newPos = MoveUp(pos); break;
-                            case VirtualKey.Down: newPos = MoveDown(pos); break;
-                            case VirtualKey.Left: newPos = MoveLeft(pos); break;
-                            case VirtualKey.Right: newPos = MoveRight(pos); break;
-                            default: Debug.Fail(key.ToString()); return;
+                            if (selected is not null)
+                            {
+                                ResetZoom(selected);
+                            }
+
+                            selected = newSelection;
+                            ZoomOut(selected);
                         }
-
-                        int index = (grid.ColumnDefinitions.Count * newPos.Y) + newPos.X;
-
-                        if (PaletteOrientation == Orientation.Horizontal) // the last column may be incomplete
-                        {
-                            Pos last = Last();
-                            // adjust index by the number of empty column positions above this row
-                            index -= Math.Max(0, newPos.Y - (last.Y + 1));
-                        }
-
-                        newSelection = grid.Children[index] as Border;
-
-                        Debug.Assert(newSelection is not null);
-                        Debug.Assert(newPos.X == Grid.GetColumn(newSelection));
-                        Debug.Assert(newPos.Y == Grid.GetRow(newSelection));
-                    }
-
-                    if (newSelection is not null)
-                    {
-                        if (selected is not null)
-                        {
-                            ResetZoom(selected);
-                        }
-
-                        selected = newSelection;
-                        ZoomOut(newSelection);
                     }
                 }
             }
